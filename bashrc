@@ -1,0 +1,2 @@
+alias vimdiff='vim -d'
+
