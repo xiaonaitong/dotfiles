@@ -2,7 +2,6 @@ set nocompatible
 set nobk
 set encoding=utf-8
 set fileencodings=utf-8,chinese,latin-1
-language messages zh_CN.UTF-8
 "tab setting
 set tabstop=4
 set expandtab
