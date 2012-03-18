@@ -20,6 +20,7 @@
 (recentf-mode 1)
 (require 'linum)
 (global-linum-mode 1)
+(set-face-background 'hl-line "#111")
 
 ;;; Shell mode
 (setq ansi-color-names-vector ; better contrast colors
@@ -113,16 +114,22 @@
 (global-set-key (kbd "<f6>") 'rof)
 (global-set-key (kbd "<f7>") 'split-window-vertically)
 (global-set-key (kbd "<f8>") 'split-window-horizontally)
-(global-set-key (kbd "<f9>") 'toggle-fullscreen)
+(global-set-key (kbd "<f9>") 'execute-extended-command)
 (global-set-key (kbd "<f10>") 'other-window)
-(global-set-key (kbd "<f11>") 'delete-window)
-(global-set-key (kbd "<f12>") 'delete-other-windows)
-(global-set-key (kbd "C-<f10>") 'ido-kill-buffer)
+(global-set-key (kbd "<f11> <f11>") 'delete-window)
+(global-set-key (kbd "<f11> k") (function (lambda ()
+                                            (interactive)
+                                            (kill-buffer))))
+(global-set-key (kbd "<f11> i") 'ido-kill-buffer)
+(global-set-key (kbd "<f12> f") 'delete-other-windows)
+(global-set-key (kbd "<f12> t") 'toggle-fullscreen)
+(global-set-key (kbd "<f12> o") 'find-file)
+(global-set-key (kbd "<f12> d") 'ido-dired)
+(global-set-key (kbd "<f12> g") 'refresh-file)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
 (global-set-key (kbd "C-M-h") 'backward-kill-word)
 (global-set-key (kbd "C-h a") 'apropos)
-(global-set-key (kbd "C-x f") 'refresh-file)
 (global-set-key (kbd "C-x C-j") 'dired-open-current-directory)
 (global-set-key (kbd "M-0") 'kill-whole-line)
 (setq kill-whole-line t)
@@ -130,6 +137,7 @@
 (global-set-key (kbd "C-<f6>") 'xsteve-ido-choose-from-recentf)
 (global-set-key (kbd "M-j") 'new-line-at-end)
 (global-set-key (kbd "M-<f12>") 'just-one-space)
+(global-set-key (kbd "<f1> <f1>") 'woman)
 
 ;;; newline below current-line
 (defun new-line-at-end ()
@@ -320,7 +328,8 @@ it to the beginning of the line."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(quack-programs (quote ("mzscheme" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi"))))
+ '(quack-programs (quote ("mzscheme" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
+ '(tab-width 4))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -376,6 +385,19 @@ it to the beginning of the line."
 (global-set-key (kbd "C-c h") 'pylookup-lookup)
 
 ;;magit dired key
+(require 'magit-svn)
+
+(defun magit-svn-start ()
+  "start a magit status buffer with magit-svn-mode on"
+  (interactive)
+  (call-interactively 'magit-status)
+  (call-interactively 'magit-svn-mode))
+
 (add-hook 'dired-mode-hook
           (function (lambda ()
-                      (local-set-key (kbd "V") 'magit-status))))
+                      (local-set-key (kbd "V") 'magit-status)
+                      (local-set-key (kbd "N") 'magit-svn-start)
+                      (local-set-key (kbd "J") 'clojure-jack-in))))
+;;; ethan-wspace
+(require 'ethan-wspace)
+(global-ethan-wspace-mode 1)
