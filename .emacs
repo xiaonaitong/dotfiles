@@ -36,11 +36,8 @@
 (defun shell-init ()
   "init shell, e.g setup PS1, so that it can be renderred correctly in emacs"
   (interactive)
-  (comint-kill-whole-line 0) ; clear old prompt
   (comint-send-string (get-buffer-process (current-buffer))
-		      "export PS1=\"[\\h \\W]$\"")
-  (comint-send-string (get-buffer-process (current-buffer))
-		      "\n"))
+                      "export PS1=\"[\\h \\W]$\""))
 ;; clojure-mode
 (add-to-list 'load-path "~/local/clojure-mode")
     (require 'clojure-mode)
@@ -401,3 +398,17 @@ it to the beginning of the line."
 ;;; ethan-wspace
 (require 'ethan-wspace)
 (global-ethan-wspace-mode 1)
+
+;;python header
+(define-skeleton python-header-skel
+  "Insert bang ,code-system header and main func"
+  nil
+  "#! /bin/env python
+# -* - coding: UTF-8 -* -
+
+if __name__ == '__main__':
+    print 'rock!'")
+
+(add-hook 'python-mode-hook
+          (function (lambda ()
+                      (local-set-key (kbd "C-c p") 'python-header-skel))))
