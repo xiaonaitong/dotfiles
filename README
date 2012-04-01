@@ -1,8 +1,2 @@
-vim plugins:
-    tcomment
-    vimim
-    zencoding
-    nerd_tree
-    vimwiki
-    toggleRelative
-
+This is my personal repo for dotfiles, not quite complete
+I mainly use emacs and bash now
