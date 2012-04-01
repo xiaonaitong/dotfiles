@@ -1,7 +1,8 @@
 ;;when clojure version >=  1.3.0 
-(when (some (complement neg?)
-            (map - (map *clojure-version* [:major :minor :incremental])
-                 [1, 3, 0]))
+(when ((fnil pos? 1)
+       (first (remove zero?
+                      (map - (map *clojure-version* [:major :minor :incremental])
+                           [1, 3, 0]))))
   (do
     (use 'clojure.repl)
     (use 'clojure.pprint)
@@ -21,23 +22,23 @@
                                       ""))
                print-name (if full #(if % (name %) "") symbol-simple-name )
                method-decl (fn [{:keys [return-type parameter-types flags]
-                                mname :name}] 
+                                mname :name}]
                              (let [flags (set flags)]
-                              (when (seq (filter flags prev))
-                                (format "%15s %10s %s(%s)"
-                                        (apply str (interpose " " (map name (filter flags prev))))
-                                        (print-name return-type)
-                                        (print-name mname)
-                                        (apply str (interpose ","
-                                                              (map print-name parameter-types)))))))]
+                               (when (seq (filter flags prev))
+                                 (format "%15s %10s %s(%s)"
+                                         (apply str (interpose " " (map name (filter flags prev))))
+                                         (print-name return-type)
+                                         (print-name mname)
+                                         (apply str (interpose ","
+                                                               (map print-name parameter-types)))))))]
            (let [clazz (if (class? o) o (type o))
                  clazzes (if basic [clazz]
                              (conj (supers clazz) clazz))
                  methods (mapcat  (comp :members (ns-resolve 'clojure.reflect 'reflect)) clazzes)
                  methods (filter (comp match? :name) methods)]
-                        (dorun
-                         (map println
-                              (->> methods (map method-decl) set)))))))
+             (dorun
+              (map println
+                   (->> methods (map method-decl) set)))))))
     (defn add-pom-deps [deps]
       (require 'cemerick.pomegranate)
       ((ns-resolve 'cemerick.pomegranate  'add-dependencies) :coordinates deps

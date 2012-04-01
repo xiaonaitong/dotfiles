@@ -1,5 +1,6 @@
 ;;; -*- coding: utf-8 -*-
 (add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "/mnt/shared/dotfiles/.emacs.d")
 (require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
@@ -20,6 +21,7 @@
 (recentf-mode 1)
 (require 'linum)
 (global-linum-mode 1)
+(require 'hl-line)
 (set-face-background 'hl-line "#111")
 
 ;;; Shell mode
@@ -48,7 +50,7 @@
   (paredit-mode 1))
 
 (dolist (mode-hook '(clojure-mode-hook lisp-mode-hook emacs-lisp-mode-hook inferior-emacs-lisp-mode-hook
-				       slime-repl-mode-hook slime-mode-hook  ielm-mode-hook inferior-scheme-mode-hook))
+                       slime-repl-mode-hook slime-mode-hook  ielm-mode-hook inferior-scheme-mode-hook))
   (add-hook mode-hook 'paredit-mode-enable))
 ;; slime
 (defun load-origin-slime ()
@@ -56,7 +58,15 @@
    use it When needed to connect remote swank-clojure session or use lisp"
   (interactive)
   (add-to-list 'load-path "~/local/slime")
-  (require 'slime))
+  (require 'slime)
+  (slime-setup '(slime-js))
+  (add-hook 'js2-mode-hook
+            (lambda ()
+              (slime-js-minor-mode 1)))
+  (add-hook 'css-mode-hook
+            (lambda ()
+              (define-key css-mode-map "\M-\C-x" 'slime-js-refresh-css)
+              (define-key css-mode-map "\C-c\C-r" 'slime-js-embed-css))))
 
 (setq slime-net-coding-system 'utf-8-unix)
 (add-hook 'slime-repl-mode-hook
@@ -64,9 +74,9 @@
             (let (font-lock-mode)
               (clojure-mode-font-lock-setup))))
 
-(eval-after-load "slime" 
+(eval-after-load "slime"
   '(progn (slime-setup '(slime-repl))
-	  (setq slime-protocol-version 'ignore)))
+      (setq slime-protocol-version 'ignore)))
 
 ;;use ido
 (require 'ido)
@@ -84,7 +94,7 @@
 (define-key key-translation-map [?\]] [?\)])
 (define-key key-translation-map [?\(] [?\[])
 (define-key key-translation-map [?\)] [?\]])
-;;aliases 
+;;aliases
 (defalias 'rof 'recentf-open-files)
 (defalias 'rb 'revert-buffer)
 (defalias 'ora 'sql-oracle)
@@ -153,14 +163,14 @@
   (interactive)
   (let ((current-value (frame-parameter nil 'fullscreen)))
     (set-frame-parameter nil 'fullscreen
-			 (if (equal 'fullboth current-value)
-			     (if (boundp 'old-fullscreen) old-fullscreen nil)
-			   (progn (setq old-fullscreen current-value)
-				  'fullboth)))))
+             (if (equal 'fullboth current-value)
+                 (if (boundp 'old-fullscreen) old-fullscreen nil)
+               (progn (setq old-fullscreen current-value)
+                  'fullboth)))))
 (toggle-fullscreen)
 
 ;;refresh buffer
-(defun refresh-file () 
+(defun refresh-file ()
   "Refresh buffer from disk"
     (interactive)
     (revert-buffer t (not (buffer-modified-p)) t))
@@ -174,7 +184,7 @@ it to the beginning of the line."
   (if (bolp)
       (back-to-indentation)
     (beginning-of-line)))
-;;mozRepl 
+;;mozRepl
 (autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
 (add-hook 'javascript-mode-hook 'javascript-custom-setup)
 (defun javascript-custom-setup ()
@@ -287,19 +297,19 @@ it to the beginning of the line."
 (require 'moz)
 (require 'json)
 (setq moz-repl-host "10.0.2.2")
- 
+
 (defun moz-update (&rest ignored)
   "Update the remote mozrepl instance"
   (interactive)
   (comint-send-string (inferior-moz-process)
     (concat "content.document.body.innerHTML="
              (json-encode (buffer-string)) ";")))
- 
+
 (defun moz-enable-auto-update ()
   "Automatically the remote mozrepl when this buffer changes"
   (interactive)
   (add-hook 'after-change-functions 'moz-update t t))
- 
+
 (defun moz-disable-auto-update ()
   "Disable automatic mozrepl updates"
   (interactive)
@@ -377,7 +387,7 @@ it to the beginning of the line."
 (autoload 'pylookup-lookup "pylookup"
   "Lookup SEARCH-TERM in the Python HTML indexes." t)
 
-(autoload 'pylookup-update "pylookup" 
+(autoload 'pylookup-update "pylookup"
   "Run pylookup-update and create the database at `pylookup-db-file'." t)
 (global-set-key (kbd "C-c h") 'pylookup-lookup)
 
@@ -412,3 +422,20 @@ if __name__ == '__main__':
 (add-hook 'python-mode-hook
           (function (lambda ()
                       (local-set-key (kbd "C-c p") 'python-header-skel))))
+
+;; html skeleton
+(define-skeleton html-skel
+  "Insert an empty html page"
+  nil
+  "<!DOCTYPE HTML>
+<html lang=\"en\">
+<head>
+    <meta charset=\"UTF-8\">
+    <title></title>
+</head>
+<body>\n"
+_
+"
+</body>
+</html>
+")
