@@ -121,7 +121,7 @@
 (global-set-key (kbd "<f6>") 'rof)
 (global-set-key (kbd "<f7>") 'split-window-vertically)
 (global-set-key (kbd "<f8>") 'split-window-horizontally)
-(global-set-key (kbd "<f9>") 'execute-extended-command)
+(global-set-key (kbd "<f9>") 'shell)
 (global-set-key (kbd "<f10>") 'other-window)
 (global-set-key (kbd "<f11> <f11>") 'delete-window)
 (global-set-key (kbd "<f11> k") (function (lambda ()
@@ -133,6 +133,7 @@
 (global-set-key (kbd "<f12> o") 'find-file)
 (global-set-key (kbd "<f12> d") 'ido-dired)
 (global-set-key (kbd "<f12> g") 'refresh-file)
+(global-set-key (kbd "<f12> l") 'list-buffers)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
 (global-set-key (kbd "C-M-h") 'backward-kill-word)
@@ -422,6 +423,7 @@ if __name__ == '__main__':
 (add-hook 'python-mode-hook
           (function (lambda ()
                       (local-set-key (kbd "C-c p") 'python-header-skel))))
+(require 'virtualenv)
 
 ;; html skeleton
 (define-skeleton html-skel
@@ -439,3 +441,6 @@ _
 </body>
 </html>
 ")
+(add-hook 'html-mode-hoo
+          (function (lambda ()
+                      (local-set-key (kbd "C-c p") 'html-skel))))
