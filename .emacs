@@ -24,22 +24,24 @@
 (require 'hl-line)
 (set-face-background 'hl-line "#111")
 
+;; ;; Load CEDET
+;; (load-file "/mnt/shared/cedet/cedet-devel-load.el")
+
+;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
+;; (semantic-mode 1)
+
 ;;; Shell mode
 (setq ansi-color-names-vector ; better contrast colors
       ["black" "red4" "green4" "yellow4"
        "blue3" "magenta4" "cyan4" "white"])
-(dolist (hook '(ansi-color-for-comint-mode-on truncate-lines shell-init))
+(dolist (hook '(ansi-color-for-comint-mode-on truncate-lines))
   (add-hook 'shell-mode-hook hook))
 
 (defun truncate-lines ()
   "toggle truncate long line into multi-line,used as hook for shell-mode "
   (toggle-truncate-lines 1))
 
-(defun shell-init ()
-  "init shell, e.g setup PS1, so that it can be renderred correctly in emacs"
-  (interactive)
-  (comint-send-string (get-buffer-process (current-buffer))
-                      "export PS1=\"[\\h \\W]$\""))
 ;; clojure-mode
 (add-to-list 'load-path "~/local/clojure-mode")
     (require 'clojure-mode)
@@ -131,9 +133,12 @@
 (global-set-key (kbd "<f12> f") 'delete-other-windows)
 (global-set-key (kbd "<f12> t") 'toggle-fullscreen)
 (global-set-key (kbd "<f12> o") 'find-file)
+(global-set-key (kbd "<f12> F") 'find-dired)
 (global-set-key (kbd "<f12> d") 'ido-dired)
-(global-set-key (kbd "<f12> g") 'refresh-file)
+(global-set-key (kbd "<f12> R") 'refresh-file)
 (global-set-key (kbd "<f12> l") 'list-buffers)
+(global-set-key (kbd "<f12> a") 'anything)
+(global-set-key (kbd "<f12> g") 'anything-git-goto)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
 (global-set-key (kbd "C-M-h") 'backward-kill-word)
@@ -151,7 +156,7 @@
 (defun new-line-at-end ()
   (interactive)
   (progn
-    (move-end-oF-line 1)
+    (move-end-of-line 1)
     (newline)))
 ;;; dired current buffer file directory
 (defun dired-open-current-directory ()
@@ -441,6 +446,20 @@ _
 </body>
 </html>
 ")
-(add-hook 'html-mode-hoo
+(add-hook 'html-mode-hook
           (function (lambda ()
                       (local-set-key (kbd "C-c p") 'html-skel))))
+;; java skeleton
+(define-skeleton java-header-skel
+  "Insert an empty java class with main method"
+  nil
+  "public class Hello {
+  public static void main(String[] args) {
+    System.out.println(\"hello\");
+  }
+}
+")
+(add-hook 'java-mode-hook
+          (function (lambda ()
+                      (local-set-key (kbd "C-c p") 'java-header-skel))))
+(require 'recentf-ext)
