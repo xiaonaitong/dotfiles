@@ -18,12 +18,16 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (menu-bar-mode 0)
 (tool-bar-mode -1)
+(setq recentf-max-saved-items 80)
 (recentf-mode 1)
 (require 'linum)
 (global-linum-mode 1)
 (require 'hl-line)
 (set-face-background 'hl-line "#111")
 
+;;auto mode
+(setq auto-mode-alist
+   (cons '("\\.vm\\'" . html-mode) auto-mode-alist))
 ;; ;; Load CEDET
 ;; (load-file "/mnt/shared/cedet/cedet-devel-load.el")
 
@@ -31,10 +35,23 @@
 ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
 ;; (semantic-mode 1)
 
+;;; load anything-config
+(require 'anything-config)
+(defun my-anything ()
+  "my anything sources contains bookmarks locatedb"
+  (interactive)
+  (anything-other-buffer '(anything-c-source-bookmarks
+                          anything-c-source-buffers+
+                          anything-c-source-recentf
+                          anything-c-source-files-in-current-dir+
+                          anything-c-source-locate)
+                         "*my-anything-buffer*"))
+
 ;;; Shell mode
 (setq ansi-color-names-vector ; better contrast colors
       ["black" "red4" "green4" "yellow4"
        "blue3" "magenta4" "cyan4" "white"])
+(setenv "PAGER" "/bin/cat")
 (dolist (hook '(ansi-color-for-comint-mode-on truncate-lines))
   (add-hook 'shell-mode-hook hook))
 
@@ -120,26 +137,27 @@
 (defalias 'gs 'magit-status)
 ;personal key map
 (global-set-key (kbd "<f5>") 'ido-switch-buffer)
-(global-set-key (kbd "<f6>") 'rof)
+;(global-set-key (kbd "<f6>") 'rof)
 (global-set-key (kbd "<f7>") 'split-window-vertically)
 (global-set-key (kbd "<f8>") 'split-window-horizontally)
 (global-set-key (kbd "<f9>") 'shell)
 (global-set-key (kbd "<f10>") 'other-window)
 (global-set-key (kbd "<f11> <f11>") 'delete-window)
 (global-set-key (kbd "<f11> f") 'delete-other-windows)
-(global-set-key (kbd "<f11> k") (function (lambda ()
-                                            (interactive)
-                                            (kill-buffer))))
-(global-set-key (kbd "<f11> o") 'occur)
 (global-set-key (kbd "<f11> i") 'ido-kill-buffer)
-(global-set-key (kbd "<f12> r") 'refresh-file)
-(global-set-key (kbd "<f12> f") 'anything)
+(global-set-key (kbd "<f11> k") 'kill-current-buffer)
+(global-set-key (kbd "<f11> o") 'occur)
+(global-set-key (kbd "<f12> S") 'find-dired)
 (global-set-key (kbd "<f12> d") 'ido-dired)
+(global-set-key (kbd "<f12> f") 'my-anything)
 (global-set-key (kbd "<f12> g") 'anything-git-goto)
+(global-set-key (kbd "<f12> k") 'kill-current-buffer)
 (global-set-key (kbd "<f12> l") 'list-buffers)
 (global-set-key (kbd "<f12> o") 'find-file)
+(global-set-key (kbd "<f12> p") 'package-list-packages)
+(global-set-key (kbd "<f12> P") 'package-list-packages-no-fetch)
+(global-set-key (kbd "<f12> r") 'refresh-file)
 (global-set-key (kbd "<f12> s") 'find-name-dired)
-(global-set-key (kbd "<f12> S") 'find-dired)
 (global-set-key (kbd "<f12> t") 'toggle-fullscreen)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
@@ -153,6 +171,34 @@
 (global-set-key (kbd "M-j") 'new-line-at-end)
 (global-set-key (kbd "M-<f12>") 'just-one-space)
 (global-set-key (kbd "<f1> <f1>") 'woman)
+
+;;; programming layout
+;;; from http://dacap.com.ar/programming/keyboard-layout/
+(global-unset-key (kbd "M-m"))
+(global-set-key (kbd "M-m s") 'save-buffer)
+(global-set-key (kbd "M-m f") 'find-file)
+(global-set-key (kbd "M-m g") 'goto-line)
+(global-set-key (kbd "M-m m") 'back-to-indentation)
+(global-set-key (kbd "M-m t") 'transpose-chars)
+(global-set-key (kbd "M-m M-t") 'transpose-words)
+(global-set-key (kbd "M-m M-S t") 'anspose-sexps)
+(global-set-key (kbd "M-m c") 'capitalize-word)
+(global-set-key (kbd "M-m d") 'downcase-word)
+(global-set-key (kbd "M-m u") 'upcase-word)
+;;; registers
+(global-set-key (kbd "M-m r k ") 'point-to-register) ;(K = Down = Point = Put a register here)
+(global-set-key (kbd "M-m r i") 'jump-to-register)   ;(I = Up = Jump)
+(global-set-key (kbd "M-m r c") 'copy-to-register)
+(global-set-key (kbd "M-m r v") 'insert-register)
+;;; bookmarks
+(global-set-key (kbd "M-m b k") 'bookmark-set)
+(global-set-key (kbd "M-m b i") 'bookmark-jump)
+(global-set-key (kbd "M-m b b") 'bookmark-bmenu-list)
+
+;;; kill-current-buffer
+(defun kill-current-buffer()
+  (interactive)
+  (kill-buffer))
 
 ;;; newline below current-line
 (defun new-line-at-end ()
@@ -175,7 +221,6 @@
                  (if (boundp 'old-fullscreen) old-fullscreen nil)
                (progn (setq old-fullscreen current-value)
                   'fullboth)))))
-(toggle-fullscreen)
 
 ;;refresh buffer
 (defun refresh-file ()
@@ -343,6 +388,8 @@ it to the beginning of the line."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(anything-command-map-prefix-key "<f6> a")
+ '(clojure-swank-command "lein2 jack-in %s")
  '(quack-programs (quote ("mzscheme" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
  '(tab-width 4))
 (custom-set-faces
@@ -465,3 +512,32 @@ _
           (function (lambda ()
                       (local-set-key (kbd "C-c p") 'java-header-skel))))
 (require 'recentf-ext)
+
+;;; anything-git-goto
+;;; remove '-cmo', which scanning all directory for untracked and
+;;; modified files
+;;; this is much quicker than the default
+(defvar git-goto-cmd
+  "cd %s && git \
+--no-pager ls-files")
+
+;;; from http://www.millingtons.eclipse.co.uk/glyn/dotemacs.html
+(defun swap-windows ()
+  "If you have 2 windows, it swaps them."
+  (interactive)
+  (cond ((/= (count-windows) 2)
+         (message "You need exactly 2 windows to do this."))
+        (t
+         (let* ((w1 (first (window-list)))
+                (w2 (second (window-list)))
+                (b1 (window-buffer w1))
+                (b2 (window-buffer w2))
+                (s1 (window-start w1))
+                (s2 (window-start w2)))
+           (set-window-buffer w1 b2)
+           (set-window-buffer w2 b1)
+           (set-window-start w1 s2)
+           (set-window-start w2 s1))))
+  (other-window 1))
+
+(global-set-key (kbd "<f11> s") 'swap-windows)
