@@ -5,6 +5,9 @@
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 
+;;; user info
+(setq user-full-name "xiaonaitong"
+      user-mail-address "xiaonaitong@gmail.com")
 ;;; reset some default settings
 (setq x-select-enable-clipboard t
       interprogram-paste-function 'x-cut-buffer-or-selection-value
@@ -34,18 +37,6 @@
 ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
 ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
 ;; (semantic-mode 1)
-
-;;; load anything-config
-(require 'anything-config)
-(defun my-anything ()
-  "my anything sources contains bookmarks locatedb"
-  (interactive)
-  (anything-other-buffer '(anything-c-source-bookmarks
-                          anything-c-source-buffers+
-                          anything-c-source-recentf
-                          anything-c-source-files-in-current-dir+
-                          anything-c-source-locate)
-                         "*my-anything-buffer*"))
 
 ;;; Shell mode
 (setq ansi-color-names-vector ; better contrast colors
@@ -149,6 +140,7 @@
 (global-set-key (kbd "<f11> o") 'occur)
 (global-set-key (kbd "<f12> S") 'find-dired)
 (global-set-key (kbd "<f12> d") 'ido-dired)
+(global-set-key (kbd "<f11> e") 'esk-eval-and-replace)
 (global-set-key (kbd "<f12> f") 'my-anything)
 (global-set-key (kbd "<f12> g") 'anything-git-goto)
 (global-set-key (kbd "<f12> k") 'kill-current-buffer)
@@ -157,6 +149,9 @@
 (global-set-key (kbd "<f12> p") 'package-list-packages)
 (global-set-key (kbd "<f12> P") 'package-list-packages-no-fetch)
 (global-set-key (kbd "<f12> r") 'refresh-file)
+(global-set-key (kbd "<f12> R") (lambda ()
+                                  (interactive)
+                                  (esk-sudo-edit)))
 (global-set-key (kbd "<f12> s") 'find-name-dired)
 (global-set-key (kbd "<f12> t") 'toggle-fullscreen)
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -167,6 +162,7 @@
 (global-set-key (kbd "M-0") 'kill-whole-line)
 (setq kill-whole-line t)
 (global-set-key (kbd "C-<f12>") 'join-line)
+(global-set-key (kbd "C-<f11>") 'repeat)
 (global-set-key (kbd "C-<f6>") 'xsteve-ido-choose-from-recentf)
 (global-set-key (kbd "M-j") 'new-line-at-end)
 (global-set-key (kbd "M-<f12>") 'just-one-space)
@@ -388,6 +384,7 @@ it to the beginning of the line."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(android-mode-sdk-dir "/mnt/shared/android-sdk-linux")
  '(anything-command-map-prefix-key "<f6> a")
  '(clojure-swank-command "lein2 jack-in %s")
  '(quack-programs (quote ("mzscheme" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
@@ -521,23 +518,53 @@ _
   "cd %s && git \
 --no-pager ls-files")
 
-;;; from http://www.millingtons.eclipse.co.uk/glyn/dotemacs.html
+;;; based on http://www.millingtons.eclipse.co.uk/glyn/dotemacs.html
 (defun swap-windows ()
-  "If you have 2 windows, it swaps them."
+  "swap first 2 window, keep cursor window"
   (interactive)
-  (cond ((/= (count-windows) 2)
-         (message "You need exactly 2 windows to do this."))
-        (t
-         (let* ((w1 (first (window-list)))
-                (w2 (second (window-list)))
-                (b1 (window-buffer w1))
-                (b2 (window-buffer w2))
-                (s1 (window-start w1))
-                (s2 (window-start w2)))
-           (set-window-buffer w1 b2)
-           (set-window-buffer w2 b1)
-           (set-window-start w1 s2)
-           (set-window-start w2 s1))))
-  (other-window 1))
+  (let* ((w1 (first (window-list)))
+         (w2 (second (window-list)))
+         (b1 (window-buffer w1))
+         (b2 (window-buffer w2))
+         (s1 (window-start w1))
+         (s2 (window-start w2)))
+    (set-window-buffer w1 b2)
+    (set-window-buffer w2 b1)
+    (set-window-start w1 s2)
+    (set-window-start w2 s1)))
+(defun my-cycle (lst)
+  (reverse (cons (car lst)
+                 (reverse (cdr lst)))))
+(defun cycle-windows ()
+  "cycle windows"
+  (interactive)
+  (mapcar* 'set-window-buffer (window-list)
+           (my-cycle (mapcar 'window-buffer (window-list)))))
 
 (global-set-key (kbd "<f11> s") 'swap-windows)
+(global-set-key (kbd "<f11> S") 'cycle-windows)
+;;; load anything-config
+(require 'anything-config)
+(defun my-anything ()
+  "my anything sources contains bookmarks locatedb"
+  (interactive)
+  (anything-other-buffer '(anything-c-source-bookmarks
+                           anything-c-source-buffers+
+                           anything-c-source-recentf
+                           anything-c-source-files-in-current-dir+
+                           anything-c-source-locate)
+                         "*my-anything-buffer*"))
+;;; android development setting
+;;; android.el android-mode.el
+(require 'android)
+
+;;; restore or create *scratch* buffer
+(defun restore-scratch-buffer (&optional num)
+  "create *scracth* buffer, if not present.
+   with number prefix like 8, will create *scratch-8* buffer"
+  (interactive "p")
+  (let ((buffer-name (if (> num 1)
+                         (concat "*scratch-" (number-to-string num) "*")
+                       "*scratch*")))
+    (switch-to-buffer (get-buffer-create buffer-name))))
+(global-set-key (kbd "<f11> r s") 'restore-scratch-buffer)
