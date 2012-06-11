@@ -40,6 +40,22 @@
 ;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
 ;; (semantic-mode 1)
 
+
+;;; mooz/js2-mode
+(autoload 'js2-mode "js2-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . js2-mode))
+(eval-after-load 'js2-mode              ;from emacs-starter-kit-js,
+                                        ;use js2-mode instead of js-mode
+  '(progn (define-key js2-mode-map "{" 'paredit-open-curly)
+          (define-key js2-mode-map "}" 'paredit-close-curly-and-newline)
+          (add-hook 'js2-mode-hook 'esk-paredit-nonlisp)
+          (setq js2-indent-level 2)
+          (font-lock-add-keywords
+           'js2-mode `(("\\(function *\\)("
+                       (0 (progn (compose-region (match-beginning 1)
+                                                 (match-end 1) "\u0192")
+                                 nil)))))))
 ;;; Shell mode
 (setq ansi-color-names-vector ; better contrast colors
       ["black" "red4" "green4" "yellow4"
