@@ -153,7 +153,7 @@
 (global-set-key (kbd "<f12> r") 'refresh-file)
 (global-set-key (kbd "<f12> R") (lambda ()
                                   (interactive)
-                                  (esk-sudo-edit)))
+                                  (save-excursion (esk-sudo-edit))))
 (global-set-key (kbd "<f12> s") 'find-name-dired)
 (global-set-key (kbd "<f12> t") 'toggle-fullscreen)
 (global-set-key (kbd "M-/") 'hippie-expand)
