@@ -568,3 +568,4 @@ _
                        "*scratch*")))
     (switch-to-buffer (get-buffer-create buffer-name))))
 (global-set-key (kbd "<f11> r s") 'restore-scratch-buffer)
+(put 'narrow-to-region 'disabled nil)
