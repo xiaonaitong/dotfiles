@@ -1,6 +1,8 @@
 ;;; -*- coding: utf-8 -*-
+(setq user-config-root "/mnt/shared/dotfiles/.emacs.d")
 (add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path "/mnt/shared/dotfiles/.emacs.d")
+(add-to-list 'load-path user-config-root)
+(add-to-list 'load-path (expand-file-name "js2-mode" user-config-root))
 (require 'package)
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
