@@ -593,4 +593,17 @@ _
 
 ;;; magit submodule
 (eval-after-load 'magit
-  '(define-key magit-mode-map (kbd "M") 'magit-key-mode-popup-submodule))
+  '(progn
+     (define-key magit-mode-map (kbd "M") 'magit-key-mode-popup-submodule)))
+
+(add-hook 'magit-status-mode-hook
+          (lambda ()
+            (make-local-variable 'magit-refresh-pending)
+            (local-set-key (kbd ",") 'my-toggle-magit-refresh)))
+;;; temporary solution for too much refresh time
+(defun my-toggle-magit-refresh ()
+  "tempoary disable magit refresh,
+   for large repo, refresh take too much time
+   when staging untracked files, we don't want it to refresh"
+  (interactive)
+  (setq magit-refresh-pending (not magit-refresh-pending)))
