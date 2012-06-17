@@ -587,3 +587,10 @@ _
     (switch-to-buffer (get-buffer-create buffer-name))))
 (global-set-key (kbd "<f11> r s") 'restore-scratch-buffer)
 (put 'narrow-to-region 'disabled nil)
+;;; set default browser to chrome
+(setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program "google-chrome")
+
+;;; magit submodule
+(eval-after-load 'magit
+  '(define-key magit-mode-map (kbd "M") 'magit-key-mode-popup-submodule))
