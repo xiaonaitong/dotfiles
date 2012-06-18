@@ -156,6 +156,7 @@
 (global-set-key (kbd "<f11> i") 'ido-kill-buffer)
 (global-set-key (kbd "<f11> k") 'kill-current-buffer)
 (global-set-key (kbd "<f11> o") 'occur)
+(global-set-key (kbd "<f11> t") 'untabify-buffer)
 (global-set-key (kbd "<f12> S") 'find-dired)
 (global-set-key (kbd "<f12> d") 'ido-dired)
 (global-set-key (kbd "<f11> e") 'esk-eval-and-replace)
@@ -607,3 +608,7 @@ _
    when staging untracked files, we don't want it to refresh"
   (interactive)
   (setq magit-refresh-pending (not magit-refresh-pending)))
+
+(defun untabify-buffer ()
+  (interactive)
+  (untabify (point-min) (point-max)))
