@@ -287,7 +287,15 @@ it to the beginning of the line."
              (list ?\"  ;; REMOVED ?w ?_
                    (let ((matching (matching-paren delimiter)))
                      (and matching (char-syntax matching)))))))
-
+;;; restore paredit-non-lisp comment style
+(eval-after-load 'paredit-mode
+  (define-key paredit-mode-map
+    (kbd "M-;")
+    (lambda ()
+      (interactive)
+      (if (not (member major-mode '(emacs-lisp-mode clojure-mode lisp-mode scheme-mode)))
+        (call-interactively 'comment-dwim)
+        (call-interactively 'paredit-comment-dwim)))))
 ;;;zen-coding
 (require 'zencoding-mode)
 (add-hook 'sgml-mode-hook 'zencoding-mode)
