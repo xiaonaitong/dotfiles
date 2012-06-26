@@ -252,12 +252,6 @@ it to the beginning of the line."
   (if (bolp)
       (back-to-indentation)
     (beginning-of-line)))
-;;mozRepl
-(autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
-(add-hook 'javascript-mode-hook 'javascript-custom-setup)
-(defun javascript-custom-setup ()
-  (moz-minor-mode 1))
-
 ;;default kill & copy current line
 (defadvice kill-ring-save (before slick-copy activate compile)
   "When called interactively with no active region, copy the current line."
@@ -275,13 +269,6 @@ it to the beginning of the line."
        (list (region-beginning) (region-end))
      (progn
        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
-;;mozRepl
-(autoload 'inferior-moz-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
-(autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
-(add-hook 'javascript-mode-hook 'javascript-custom-setup)
-(defun javascript-custom-setup ()
-  (moz-minor-mode 1))
-
 ;;; javascript
 (add-to-list 'load-path "~/local/auto-complete-1.3.1")
 (require 'auto-complete-config)
@@ -360,28 +347,6 @@ it to the beginning of the line."
 (global-set-key (kbd "<M-right>") 'forward-open-bracket) ; Alt+→
 (global-set-key (kbd "<M-up>") 'backward-close-bracket)  ; Alt+↑
 (global-set-key (kbd "<M-down>") 'forward-close-bracket) ; Alt+↓
-
-;;; interactive html develop
-(require 'moz)
-(require 'json)
-(setq moz-repl-host "10.0.2.2")
-
-(defun moz-update (&rest ignored)
-  "Update the remote mozrepl instance"
-  (interactive)
-  (comint-send-string (inferior-moz-process)
-    (concat "content.document.body.innerHTML="
-             (json-encode (buffer-string)) ";")))
-
-(defun moz-enable-auto-update ()
-  "Automatically the remote mozrepl when this buffer changes"
-  (interactive)
-  (add-hook 'after-change-functions 'moz-update t t))
-
-(defun moz-disable-auto-update ()
-  "Disable automatic mozrepl updates"
-  (interactive)
-  (remove-hook 'after-change-functions 'moz-update t))
 
 ;;; paredit for javascript
 (defun paredit-space-for-delimiter-p (endp delimiter)
