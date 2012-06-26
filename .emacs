@@ -269,7 +269,7 @@ it to the beginning of the line."
        (list (region-beginning) (region-end))
      (progn
        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
-;;; javascript
+;;; autocomplete
 (add-to-list 'load-path "~/local/auto-complete-1.3.1")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/local/auto-complete-1.3.1/dict")
@@ -280,14 +280,13 @@ it to the beginning of the line."
 (setq ac-auto-start 2)
 (setq ac-ignore-case nil)
 
-;;; jslint
-;(add-to-list 'load-path "/mnt/shared/lintnode")
-;(require 'flymake-jslint)
-(setq lintnode-location "/mnt/shared/lintnode")
-(setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
-(add-hook 'js-mode-hook
-          (lambda ()
-            (lintnode-hook)))
+;;; paredit for javascript
+(defun paredit-space-for-delimiter-p (endp delimiter)
+  (and (not (if endp (eobp) (bobp)))
+       (memq (char-syntax (if endp (char-after) (char-before)))
+             (list ?\"  ;; REMOVED ?w ?_
+                   (let ((matching (matching-paren delimiter)))
+                     (and matching (char-syntax matching)))))))
 
 ;;;zen-coding
 (require 'zencoding-mode)
@@ -347,14 +346,6 @@ it to the beginning of the line."
 (global-set-key (kbd "<M-right>") 'forward-open-bracket) ; Alt+→
 (global-set-key (kbd "<M-up>") 'backward-close-bracket)  ; Alt+↑
 (global-set-key (kbd "<M-down>") 'forward-close-bracket) ; Alt+↓
-
-;;; paredit for javascript
-(defun paredit-space-for-delimiter-p (endp delimiter)
-  (and (not (if endp (eobp) (bobp)))
-       (memq (char-syntax (if endp (char-after) (char-before)))
-             (list ?\"  ;; REMOVED ?w ?_
-                   (let ((matching (matching-paren delimiter)))
-                     (and matching (char-syntax matching)))))))
 
 ;;; markdown-mode
 (autoload 'markdown-mode "/mnt/shared/markdown-mode/markdown-mode.el"
@@ -553,7 +544,7 @@ _
         (while (get-buffer (concat "*scratch-" (number-to-string num) "*"))
           (setq num (1+ num)))))
   (let ((buffer-name (concat "*scratch-" (number-to-string num) "*")))
-    (switch-to-buffer (get-buffer-create buffer-name)))))
+    (switch-to-buffer (get-buffer-create buffer-name))))
 
 (global-set-key (kbd "<f11> r s") 'restore-scratch-buffer)
 
