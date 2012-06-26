@@ -580,13 +580,18 @@ _
 ;;; restore or create *scratch* buffer
 (defun restore-scratch-buffer (&optional num)
   "create *scracth* buffer, if not present.
+   with no prefix, create *scratch-n* buffer, n is auto incremented number
    with number prefix like 8, will create *scratch-8* buffer"
   (interactive "p")
-  (let ((buffer-name (if (> num 1)
-                         (concat "*scratch-" (number-to-string num) "*")
-                       "*scratch*")))
-    (switch-to-buffer (get-buffer-create buffer-name))))
+  (when (= num 1)
+      (progn
+        (while (get-buffer (concat "*scratch-" (number-to-string num) "*"))
+          (setq num (1+ num)))))
+  (let ((buffer-name (concat "*scratch-" (number-to-string num) "*")))
+    (switch-to-buffer (get-buffer-create buffer-name)))))
+
 (global-set-key (kbd "<f11> r s") 'restore-scratch-buffer)
+
 (put 'narrow-to-region 'disabled nil)
 ;;; set default browser to chrome
 (setq browse-url-browser-function 'browse-url-generic
