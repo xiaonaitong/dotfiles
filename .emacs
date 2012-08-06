@@ -156,7 +156,7 @@
 (global-set-key (kbd "<f11> i") 'ido-kill-buffer)
 (global-set-key (kbd "<f11> k") 'kill-current-buffer)
 (global-set-key (kbd "<f11> o") 'occur)
-(global-set-key (kbd "<f11> t") 'untabify-buffer)
+(global-set-key (kbd "<f11> t") 'esk-cleanup-buffer)
 (global-set-key (kbd "<f12> S") 'find-dired)
 (global-set-key (kbd "<f12> d") 'ido-dired)
 (global-set-key (kbd "<f11> e") 'esk-eval-and-replace)
@@ -288,14 +288,18 @@ it to the beginning of the line."
                    (let ((matching (matching-paren delimiter)))
                      (and matching (char-syntax matching)))))))
 ;;; restore paredit-non-lisp comment style
+(defun my-overrided-paredit-comment-dwim ()
+  "override paredit-comment-dwim, when not in lisp family language
+  invoke default comment-dwim "
+  (interactive)
+  (if (not (member major-mode '(emacs-lisp-mode clojure-mode lisp-mode scheme-mode)))
+      (call-interactively 'comment-dwim)
+    (call-interactively 'paredit-comment-dwim)))
+
 (eval-after-load 'paredit-mode
   (define-key paredit-mode-map
-    (kbd "M-;")
-    (lambda ()
-      (interactive)
-      (if (not (member major-mode '(emacs-lisp-mode clojure-mode lisp-mode scheme-mode)))
-        (call-interactively 'comment-dwim)
-        (call-interactively 'paredit-comment-dwim)))))
+    [remap paredit-comment-dwim]
+    'my-overrided-paredit-comment-dwim))
 ;;;zen-coding
 (require 'zencoding-mode)
 (add-hook 'sgml-mode-hook 'zencoding-mode)
@@ -578,6 +582,4 @@ _
   (interactive)
   (setq magit-refresh-pending (not magit-refresh-pending)))
 
-(defun untabify-buffer ()
-  (interactive)
-  (untabify (point-min) (point-max)))
+(require 'javap-handler)
