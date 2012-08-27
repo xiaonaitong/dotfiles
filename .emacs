@@ -161,7 +161,7 @@
 (global-set-key (kbd "<f12> d") 'ido-dired)
 (global-set-key (kbd "<f11> e") 'esk-eval-and-replace)
 (global-set-key (kbd "<f12> f") 'my-anything)
-(global-set-key (kbd "<f12> g") 'anything-git-goto)
+(global-set-key (kbd "<f12> g") 'my-anything-git-repo-or-file-cache)
 (global-set-key (kbd "<f12> k") 'kill-current-buffer)
 (global-set-key (kbd "<f12> l") 'list-buffers)
 (global-set-key (kbd "<f12> o") 'find-file)
@@ -541,6 +541,20 @@ _
                            anything-c-source-files-in-current-dir+
                            anything-c-source-locate)
                          "*my-anything-buffer*"))
+(defvar cached-files nil
+  "record cached filecache directories")
+(defun my-anything-git-repo-or-file-cache ()
+  "find file in git repo or file cached dir"
+  (interactive)
+  (if (anything-git-goto-find-git-repo default-directory)
+      (call-interactively 'anything-git-goto )
+    (progn
+      (require 'filecache)
+      (when (not (member default-directory cached-files))
+        (setq cached-files (cons default-directory cached-files))
+        (call-interactively 'file-cache-add-directory-using-find))
+      (anything-other-buffer '(anything-c-source-file-cache)
+                            "*my-anything-file-cache-buffer*"))))
 ;;; android development setting
 ;;; android.el android-mode.el
 (require 'android)
