@@ -532,6 +532,7 @@ _
 (global-set-key (kbd "<f11> S") 'cycle-windows)
 ;;; load anything-config
 (require 'anything-config)
+(require 'anything-git-goto)
 (defun my-anything ()
   "my anything sources contains bookmarks locatedb"
   (interactive)
