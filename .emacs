@@ -583,3 +583,4 @@ _
   (setq magit-refresh-pending (not magit-refresh-pending)))
 
 (require 'javap-handler)
+(setq byte-compile-warnings '(not nresolved free-vars callargs redefine obsolete noruntime cl-functions interactive-only))
