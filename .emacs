@@ -1,18 +1,39 @@
 ;;; -*- coding: utf-8 -*-
-(setq user-config-root "/mnt/shared/dotfiles/.emacs.d")
+(setq user-package-root "~/try/")
 (add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path user-config-root)
-(add-to-list 'load-path (expand-file-name "js2-mode" user-config-root))
-(require 'package)
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+(add-to-list 'load-path "~/try/dotfiles/.emacs.d")
+(add-to-list 'load-path (expand-file-name "js2-mode" user-package-root))
+(add-to-list 'load-path (expand-file-name "auto-complete-1.3.1" user-package-root))
+(setq package-archives
+      '(("ELPA" . "http://tromey.com/elpa/")
+        ("gnu" . "http://elpa.gnu.org/packages/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("SC" . "http://joseito.republika.pl/sunrise-commander/")))
 (package-initialize)
-
 ;;; user info
 (setq user-full-name "xiaonaitong"
       user-mail-address "xiaonaitong@gmail.com")
+;;;mac specific
+(setq mac-option-modifier 'super
+      mac-command-modifier 'meta)
+(when (eq system-type 'darwin)
+      ;; default Latin font (e.g. Consolas)
+      ;;(set-face-attribute 'default nil :family "Consolas")
+      ;; default font size (point * 10)
+      ;;
+      ;; WARNING!  Depending on the default font,
+      ;; if the size is not supported very well, the frame will be clipped
+      ;; so that the beginning of the buffer may not be visible correctly.
+      (set-face-attribute 'default nil :height 120)
+      ;; use specific font for Korean charset.
+      ;; if you want to use different font size for specific charset,
+      ;; add :size POINT-SIZE in the font-spec.
+      ;;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
+      ;; you may want to add different for other charset in this way.
+      (setenv "PATH" (concat "/usr/local/bin" ":" (getenv "PATH")))
+      (push "/usr/local/bin" exec-path))
 ;;; reset some default settings
 (setq x-select-enable-clipboard t
-      interprogram-paste-function 'x-cut-buffer-or-selection-value
       make-backup-files nil
       inhibit-startup-message t
       auto-save-default nil
@@ -33,13 +54,6 @@
 ;;auto mode
 (setq auto-mode-alist
    (cons '("\\.vm\\'" . html-mode) auto-mode-alist))
-;; ;; Load CEDET
-;; (load-file "/mnt/shared/cedet/cedet-devel-load.el")
-
-;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
-;; (add-to-list 'semantic-default-submodes 'global-semantic-idle-completions-mode)
-;; (semantic-mode 1)
-
 
 ;;; mooz/js2-mode
 (autoload 'js2-mode "js2-mode" nil t)
@@ -69,8 +83,7 @@
   (toggle-truncate-lines 1))
 
 ;; clojure-mode
-(add-to-list 'load-path "~/local/clojure-mode")
-    (require 'clojure-mode)
+(require 'clojure-mode)
 
 (require 'paredit)
 
@@ -85,7 +98,7 @@
   "load origin slime instead of swank-clojure internal slime
    use it When needed to connect remote swank-clojure session or use lisp"
   (interactive)
-  (add-to-list 'load-path "~/local/slime")
+  (add-to-list 'load-path  (expand-file-name "slime" user-package-root))
   (require 'slime)
   (slime-setup '(slime-js))
   (add-hook 'js2-mode-hook
@@ -147,32 +160,34 @@
 ;personal key map
 (global-set-key (kbd "<f5>") 'ido-switch-buffer)
 ;(global-set-key (kbd "<f6>") 'rof)
+(global-unset-key (kbd "<f10>"))
 (global-set-key (kbd "<f7>") 'split-window-vertically)
 (global-set-key (kbd "<f8>") 'split-window-horizontally)
-(global-set-key (kbd "<f9>") 'shell)
-(global-set-key (kbd "<f10>") 'other-window)
-(global-set-key (kbd "<f11> <f11>") 'delete-window)
-(global-set-key (kbd "<f11> f") 'delete-other-windows)
-(global-set-key (kbd "<f11> i") 'ido-kill-buffer)
-(global-set-key (kbd "<f11> k") 'kill-current-buffer)
-(global-set-key (kbd "<f11> o") 'occur)
-(global-set-key (kbd "<f11> t") 'esk-cleanup-buffer)
-(global-set-key (kbd "<f12> S") 'find-dired)
-(global-set-key (kbd "<f12> d") 'ido-dired)
-(global-set-key (kbd "<f11> e") 'esk-eval-and-replace)
-(global-set-key (kbd "<f12> f") 'my-anything)
-(global-set-key (kbd "<f12> g") 'my-anything-git-repo-or-file-cache)
-(global-set-key (kbd "<f12> k") 'kill-current-buffer)
-(global-set-key (kbd "<f12> l") 'list-buffers)
-(global-set-key (kbd "<f12> o") 'find-file)
-(global-set-key (kbd "<f12> p") 'package-list-packages)
-(global-set-key (kbd "<f12> P") 'package-list-packages-no-fetch)
-(global-set-key (kbd "<f12> r") 'refresh-file)
-(global-set-key (kbd "<f12> R") (lambda ()
+(global-set-key (kbd "<f12>") 'shell)
+(global-set-key (kbd "<f11>") 'other-window)
+(global-set-key (kbd "<f9> <f9>") 'delete-window)
+(global-set-key (kbd "<f9> f") 'delete-other-windows)
+(global-set-key (kbd "<f9> i") 'ido-kill-buffer)
+(global-set-key (kbd "<f9> k") 'kill-current-buffer)
+(global-set-key (kbd "<f9> o") 'occur)
+(global-set-key (kbd "<f9> t") 'esk-cleanup-buffer)
+(global-set-key (kbd "<f9> e") 'esk-eval-and-replace)
+(global-set-key (kbd "<f10> S") 'find-dired)
+(global-set-key (kbd "<f10> d") 'ido-dired)
+(global-set-key (kbd "<f10> f") 'my-anything)
+
+(global-set-key (kbd "<f10> g") 'my-anything-git-repo-or-file-cache)
+(global-set-key (kbd "<f10> k") 'kill-current-buffer)
+(global-set-key (kbd "<f10> l") 'list-buffers)
+(global-set-key (kbd "<f10> o") 'find-file)
+(global-set-key (kbd "<f10> p") 'package-list-packages)
+(global-set-key (kbd "<f10> P") 'package-list-packages-no-fetch)
+(global-set-key (kbd "<f10> r") 'refresh-file)
+(global-set-key (kbd "<f10> R") (lambda ()
                                   (interactive)
                                   (save-excursion (esk-sudo-edit))))
-(global-set-key (kbd "<f12> s") 'find-name-dired)
-(global-set-key (kbd "<f12> t") 'toggle-fullscreen)
+(global-set-key (kbd "<f10> s") 'find-name-dired)
+(global-set-key (kbd "<f10> t") 'toggle-fullscreen)
 (global-set-key (kbd "M-/") 'hippie-expand)
 (global-set-key (kbd "C-a") 'smart-line-beginning)
 (global-set-key (kbd "C-M-h") 'backward-kill-word)
@@ -180,11 +195,11 @@
 (global-set-key (kbd "C-x C-j") 'dired-open-current-directory)
 (global-set-key (kbd "M-0") 'kill-whole-line)
 (setq kill-whole-line t)
-(global-set-key (kbd "C-<f12>") 'join-line)
+(global-set-key (kbd "C-<f10>") 'join-line)
 (global-set-key (kbd "C-<f11>") 'repeat)
 (global-set-key (kbd "C-<f6>") 'xsteve-ido-choose-from-recentf)
 (global-set-key (kbd "M-j") 'new-line-at-end)
-(global-set-key (kbd "M-<f12>") 'just-one-space)
+(global-set-key (kbd "M-<f10>") 'just-one-space)
 (global-set-key (kbd "<f1> <f1>") 'woman)
 
 ;;; programming layout
@@ -270,9 +285,8 @@ it to the beginning of the line."
      (progn
        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
 ;;; autocomplete
-(add-to-list 'load-path "~/local/auto-complete-1.3.1")
 (require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/local/auto-complete-1.3.1/dict")
+(add-to-list 'ac-dictionary-directories (expand-file-name "auto-complete-1.3.1/dict" user-package-root))
 (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
 (global-auto-complete-mode t)
 (add-to-list 'ac-modes 'inferior-scheme-mode)
@@ -360,7 +374,7 @@ it to the beginning of the line."
 (global-set-key (kbd "<M-down>") 'forward-close-bracket) ; Alt+↓
 
 ;;; markdown-mode
-(autoload 'markdown-mode "/mnt/shared/markdown-mode/markdown-mode.el"
+(autoload 'markdown-mode (expand-file-name "markdown-mode/markdown-mode.el" user-package-root)
    "Major mode for editing Markdown files" t)
 (setq auto-mode-alist
    (cons '("\\.\\(text\\|md\\)\\'" . markdown-mode) auto-mode-alist))
@@ -371,7 +385,6 @@ it to the beginning of the line."
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(android-mode-sdk-dir "/mnt/shared/android-sdk-linux")
  '(anything-command-map-prefix-key "<f6> a")
  '(clojure-swank-command "lein2 jack-in %s")
  '(quack-programs (quote ("mzscheme" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
@@ -383,7 +396,6 @@ it to the beginning of the line."
   ;; If there is more than one, they won't work right.
  '(magit-item-highlight ((t (:inherit highlight :background "#111")))))
 
-(add-to-list 'load-path "/mnt/shared/expand-region")
 (require 'expand-region)
 (global-set-key (kbd "C-<prior>") 'er/expand-region)
 
@@ -399,17 +411,11 @@ it to the beginning of the line."
                                   recentf-list)
                           nil t))))
 
-(setq ditaa-cmd "java -jar /home/ubuntu/local/ditaa/trunk/web/lib/ditaa0_9.jar")
-(defun djcb-ditaa-generate ()
-  (interactive)
-  (shell-command
-   (concat ditaa-cmd " " buffer-file-name " -o -E -s 0.7")))
-
 (global-set-key "\M-n" '"\C-u1\C-v")
 (global-set-key "\M-p" '"\C-u1\M-v")
 
 ;;;pylookup
-(setq pylookup-dir "/mnt/shared/pylookup")
+(setq pylookup-dir (expand-file-name "pylookup" user-package-root))
 (add-to-list 'load-path pylookup-dir)
 
 ;; load pylookup when compile time
@@ -528,8 +534,8 @@ _
   (mapcar* 'set-window-buffer (window-list)
            (my-cycle (mapcar 'window-buffer (window-list)))))
 
-(global-set-key (kbd "<f11> s") 'swap-windows)
-(global-set-key (kbd "<f11> S") 'cycle-windows)
+(global-set-key (kbd "<f9> s") 'swap-windows)
+(global-set-key (kbd "<f9> S") 'cycle-windows)
 ;;; load anything-config
 (require 'anything-config)
 (require 'anything-git-goto)
@@ -556,9 +562,6 @@ _
         (call-interactively 'file-cache-add-directory-using-find))
       (anything-other-buffer '(anything-c-source-file-cache)
                             "*my-anything-file-cache-buffer*"))))
-;;; android development setting
-;;; android.el android-mode.el
-(require 'android)
 
 ;;; restore or create *scratch* buffer
 (defun restore-scratch-buffer (&optional num)
@@ -573,7 +576,7 @@ _
   (let ((buffer-name (concat "*scratch-" (number-to-string num) "*")))
     (switch-to-buffer (get-buffer-create buffer-name))))
 
-(global-set-key (kbd "<f11> r s") 'restore-scratch-buffer)
+(global-set-key (kbd "<f9> r s") 'restore-scratch-buffer)
 
 (put 'narrow-to-region 'disabled nil)
 ;;; set default browser to chrome
