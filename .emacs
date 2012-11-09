@@ -1,9 +1,7 @@
 ;;; -*- coding: utf-8 -*-
-(setq user-package-root "~/try/")
+(setq user-package-root "~/source/")
 (add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path "~/try/dotfiles/.emacs.d")
-(add-to-list 'load-path (expand-file-name "js2-mode" user-package-root))
-(add-to-list 'load-path (expand-file-name "auto-complete-1.3.1" user-package-root))
+(add-to-list 'load-path "~/source/dotfiles/.emacs.d")
 (setq package-archives
       '(("ELPA" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
@@ -94,11 +92,10 @@
                        slime-repl-mode-hook slime-mode-hook  ielm-mode-hook inferior-scheme-mode-hook))
   (add-hook mode-hook 'paredit-mode-enable))
 ;; slime
-(defun load-origin-slime ()
+(defun load-slime ()
   "load origin slime instead of swank-clojure internal slime
    use it When needed to connect remote swank-clojure session or use lisp"
   (interactive)
-  (add-to-list 'load-path  (expand-file-name "slime" user-package-root))
   (require 'slime)
   (slime-setup '(slime-js))
   (add-hook 'js2-mode-hook
