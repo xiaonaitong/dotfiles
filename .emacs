@@ -500,6 +500,12 @@ _
     (set-window-buffer w2 b1)
     (set-window-start w1 s2)
     (set-window-start w2 s1)))
+(defun reverse-swap-windows ()
+  "just like swap-windows but in opposite direction"
+  (interactive)
+  (swap-windows)
+  (other-window 1))
+
 (defun my-cycle (lst)
   (reverse (cons (car lst)
                  (reverse (cdr lst)))))
@@ -509,8 +515,15 @@ _
   (mapcar* 'set-window-buffer (window-list)
            (my-cycle (mapcar 'window-buffer (window-list)))))
 
+(defun prev-other-window ()
+  "prev other window"
+  (interactive)
+  (other-window -1))
+
 (global-set-key (kbd "<f9> s") 'swap-windows)
 (global-set-key (kbd "<f9> S") 'cycle-windows)
+(global-set-key (kbd "<f9> r") 'reverse-swap-windows)
+(global-set-key (kbd "M-<f11>") 'prev-other-window)
 ;;; load anything-config
 (require 'anything-config)
 (require 'anything-git-goto)
