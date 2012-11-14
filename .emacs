@@ -427,7 +427,7 @@ it to the beginning of the line."
                       (local-set-key (kbd "J") 'clojure-jack-in))))
 ;;; ethan-wspace
 (require 'ethan-wspace)
-(global-ethan-wspace-mode 1)
+(global-ethan-wspace-mode 0)
 
 ;;python header
 (define-skeleton python-header-skel
@@ -590,3 +590,6 @@ _
 
 (require 'javap-handler)
 (setq byte-compile-warnings '(not nresolved free-vars callargs redefine obsolete noruntime cl-functions interactive-only))
+
+;;;whitespace mode style
+(setq whitespace-style (quote (spaces tabs newline space-mark tab-mark newline-mark)))
