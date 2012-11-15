@@ -522,7 +522,7 @@ _
 
 (global-set-key (kbd "<f9> s") 'swap-windows)
 (global-set-key (kbd "<f9> S") 'cycle-windows)
-(global-set-key (kbd "<f9> r") 'reverse-swap-windows)
+(global-set-key (kbd "C-<f9>") 'reverse-swap-windows)
 (global-set-key (kbd "M-<f11>") 'prev-other-window)
 ;;; load anything-config
 (require 'anything-config)
