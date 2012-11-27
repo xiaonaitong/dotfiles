@@ -449,7 +449,7 @@ it to the beginning of the line."
           (function (lambda ()
                       (local-set-key (kbd "V") 'magit-status)
                       (local-set-key (kbd "N") 'magit-svn-start)
-                      (local-set-key (kbd "J") 'clojure-jack-in))))
+                      (local-set-key (kbd "J") 'nrepl-jack-in))))
 ;;; ethan-wspace
 (require 'ethan-wspace)
 (global-ethan-wspace-mode 1)
@@ -602,3 +602,9 @@ _
 
 (require 'javap-handler)
 (setq byte-compile-warnings '(not nresolved free-vars callargs redefine obsolete noruntime cl-functions interactive-only))
+
+;;; nrepl
+(add-to-list 'same-window-buffer-names "*nrepl*")
+(setq nrepl-popup-stacktraces nil)
+(add-hook 'nrepl-interaction-mode-hook
+  'nrepl-turn-on-eldoc-mode)
