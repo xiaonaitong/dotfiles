@@ -1,0 +1,16 @@
+Slice Language:
+	1 metadata: type hint for code generating, amd, global metadata
+	2 checksum: check slice definition consistent
+Mapping:
+	Ice::Application
+	Ice::Service
+C++ Mapping
+	1 Smart Pointer for automatic memory management
+	2 garbage collection to cope with cycle ref
+Java Mapping
+	1 Holder for output parameter
+
+Utility Library
+
+Properties and Configuration
+	
