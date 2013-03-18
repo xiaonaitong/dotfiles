@@ -1,7 +1,8 @@
 ;;; -*- coding: utf-8 -*-
 (setq user-package-root "~/source/")
 (add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path "~/source/dotfiles/.emacs.d")
+(add-to-list 'load-path "~/try/dotfiles/.emacs.d")
+(add-to-list 'load-path "~/try/emacs-w3m")
 (setq package-archives
       '(("ELPA" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
@@ -89,7 +90,8 @@
   (paredit-mode 1))
 
 (dolist (mode-hook '(clojure-mode-hook lisp-mode-hook emacs-lisp-mode-hook inferior-emacs-lisp-mode-hook
-                       slime-repl-mode-hook slime-mode-hook  ielm-mode-hook inferior-scheme-mode-hook))
+                       slime-repl-mode-hook slime-mode-hook  ielm-mode-hook inferior-scheme-mode-hook
+                       scala-mode-hook))
   (add-hook mode-hook 'paredit-mode-enable))
 ;; slime
 (defun load-slime ()
@@ -197,7 +199,7 @@
 (global-set-key (kbd "C-<f6>") 'xsteve-ido-choose-from-recentf)
 (global-set-key (kbd "M-j") 'new-line-at-end)
 (global-set-key (kbd "M-<f10>") 'just-one-space)
-(global-set-key (kbd "<f1> <f1>") 'woman)
+(global-set-key (kbd "<f1> <f1>") 'man)
 
 ;;; programming layout
 ;;; from http://dacap.com.ar/programming/keyboard-layout/
@@ -359,11 +361,11 @@ it to the beginning of the line."
 )
 
 (add-hook 'sgml-mode-hook
- (lambda ()
- (define-key sgml-mode-map (kbd "<C-left>") 'backward-in-bracket)
- (define-key sgml-mode-map (kbd "<C-right>") 'forward-in-bracket)
- )
-)
+          (lambda ()
+            (define-key sgml-mode-map
+              (kbd "<C-left>") 'backward-in-bracket)
+            (define-key sgml-mode-map
+              (kbd "<C-right>") 'forward-in-bracket)))
 
 (global-set-key (kbd "<M-left>") 'backward-open-bracket) ; Alt+←
 (global-set-key (kbd "<M-right>") 'forward-open-bracket) ; Alt+→
@@ -371,8 +373,6 @@ it to the beginning of the line."
 (global-set-key (kbd "<M-down>") 'forward-close-bracket) ; Alt+↓
 
 ;;; markdown-mode
-(autoload 'markdown-mode (expand-file-name "markdown-mode/markdown-mode.el" user-package-root)
-   "Major mode for editing Markdown files" t)
 (setq auto-mode-alist
    (cons '("\\.\\(text\\|md\\)\\'" . markdown-mode) auto-mode-alist))
 ;;;scheme
@@ -422,9 +422,9 @@ it to the beginning of the line."
 
 (add-hook 'dired-mode-hook
           (function (lambda ()
-                      (local-set-key (kbd "V") 'magit-status)
-                      (local-set-key (kbd "N") 'magit-svn-start)
-                      (local-set-key (kbd "J") 'clojure-jack-in))))
+                      (local-set-key (kbd "V") 'magit-svn-start)
+                      (local-set-key (kbd "N") 'svn-status)
+                      (local-set-key (kbd "J") 'nrepl-jack-in))))
 ;;; ethan-wspace
 (require 'ethan-wspace)
 (global-ethan-wspace-mode 0)
@@ -433,7 +433,7 @@ it to the beginning of the line."
 (define-skeleton python-header-skel
   "Insert bang ,code-system header and main func"
   nil
-  "#! /bin/env python
+  "#! /usr/bin/env python
 # -* - coding: UTF-8 -* -
 
 if __name__ == '__main__':
@@ -527,6 +527,7 @@ _
 ;;; load anything-config
 (require 'anything-config)
 (require 'anything-git-goto)
+(setq anything-c-adaptive-history-length 100)
 (defun my-anything ()
   "my anything sources contains bookmarks locatedb"
   (interactive)
@@ -550,7 +551,7 @@ _
         (call-interactively 'file-cache-add-directory-using-find))
       (anything-other-buffer '(anything-c-source-file-cache)
                             "*my-anything-file-cache-buffer*"))))
-
+(setq anything-c-adaptive-history-length 100)
 ;;; restore or create *scratch* buffer
 (defun restore-scratch-buffer (&optional num)
   "create *scracth* buffer, if not present.
@@ -569,7 +570,7 @@ _
 (put 'narrow-to-region 'disabled nil)
 ;;; set default browser to chrome
 (setq browse-url-browser-function 'browse-url-generic
-          browse-url-generic-program "google-chrome")
+          browse-url-generic-program "chromium-browser")
 
 ;;; magit submodule
 (eval-after-load 'magit
@@ -598,3 +599,95 @@ _
 (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
 (global-set-key (kbd "S-C-<down>") 'shrink-window)
 (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "C-+") 'text-scale-increase)
+;;; for some unkown reason, in virtualbox fullscreen emacs
+;;; can't display linum fully, this add an additional space
+(setq linum-format
+      (lambda (line)
+        (propertize
+         (format (let ((w (1+ (length (number-to-string
+                                       (count-lines (point-min) (point-max)))))))
+                   (concat "%" (number-to-string w) "d ")) line) 'face 'linum)))
+
+;;; bash completion
+
+;; (add-hook 'shell-mode-hook
+;;           (lambda ()
+;;             (local-set-key (kbd "<right>") 'completion-at-point)))
+
+(autoload 'bash-completion-dynamic-complete 
+  "bash-completion"
+  "BASH completion hook")
+(add-hook 'shell-dynamic-complete-functions
+  'bash-completion-dynamic-complete)
+(add-hook 'shell-command-complete-functions
+  'bash-completion-dynamic-complete)
+
+;;; yaml-mode
+(autoload 'yaml-mode "yaml-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
+;;; root previlege edit
+(defun esk-su-edit (&optional arg)
+  (interactive "p")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/su:root@localhost:" (ido-read-file-name "File: ")))
+    (find-alternate-file (concat "/su:root@localhost:" buffer-file-name))))
+
+;;; tramp connection method
+(setq tramp-default-method "ssh")
+
+;;; shell-switcher
+(add-to-list 'load-path "~/try/shell-switcher")
+(require 'shell-switcher)
+(setq shell-switcher-mode t
+      shell-switcher-new-shell-function 'shell-switcher-make-shell)
+(global-set-key (kbd "C-M-;") 'shell-switcher-switch-buffer-other-window)
+
+;;; some useful file auto mode
+(add-to-list 'auto-mode-alist '("bashrc$" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.gitconfig$" . conf-mode))
+;;; nrepl
+(add-hook 'nrepl-interaction-mode-hook
+  'nrepl-turn-on-eldoc-mode)
+(setq nrepl-popup-stacktraces nil)
+(add-to-list 'same-window-buffer-names "*nrepl*")
+(add-hook 'nrepl-mode-hook 'subword-mode)
+(add-hook 'nrepl-mode-hook 'paredit-mode)
+
+;; scala-mode
+(defun scala-switch-to-interpreter-other-window ()
+  "Switch to buffer containing the interpreter"
+  (interactive)
+  (if (scala-interpreter-running-p-1)
+      (switch-to-buffer-other-window scala-inf-buffer-name)
+    (call-interactively 'scala-run-scala)))
+
+(add-hook 'scala-mode-hook (lambda ()
+                             (local-set-key (kbd "C-c C-z") 'scala-switch-to-interpreter-other-window)))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+
+;;w3m
+(require 'w3m-load)
+(setq w3m-use-favicon nil)
+(setq w3m-command-arguments '("-cookie" "-F"))
+(setq w3m-use-cookies t)
+(setq w3m-home-page "http://www.google.com")
+(setq browse-url-browser-function 'w3m-browse-url)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+;; optional keyboard short-cut
+(global-set-key (kbd "C-x m") 'browse-url-at-point)
+(add-hook 'dired-mode-hook
+          (function (lambda ()
+                      (local-set-key "b" 'browse-url-of-dired-file))))
+;;flycheck
+(add-hook 'prog-mode-hook 'flycheck-mode)
+(add-hook 'text-mode-hook 'flycheck-mode)
+
+;;anything-c-javadoc
+(require 'anything-c-javadoc)
+(setq anything-c-javadoc-sources (quote (anything-c-source-javadoc-classes anything-c-source-javadoc-indexes)))
+(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/")))
+(global-set-key (kbd "<f10> j") 'anything-c-javadoc)
