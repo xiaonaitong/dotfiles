@@ -647,6 +647,7 @@ _
 
 ;;; some useful file auto mode
 (add-to-list 'auto-mode-alist '("bashrc$" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("bash_aliases$" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.gitconfig$" . conf-mode))
 ;;; nrepl
 (add-hook 'nrepl-interaction-mode-hook
@@ -689,5 +690,54 @@ _
 ;;anything-c-javadoc
 (require 'anything-c-javadoc)
 (setq anything-c-javadoc-sources (quote (anything-c-source-javadoc-classes anything-c-source-javadoc-indexes)))
-(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/")))
+(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/" "http://static.springsource.org/spring/docs/3.1.x/javadoc-api/")))
 (global-set-key (kbd "<f10> j") 'anything-c-javadoc)
+;; (setq w3m-command-arguments
+;;       (nconc w3m-command-arguments
+;;              '("-o" "http_proxy=http://109.119.20.228:8087")))
+(defun my-magit-svn (dir)
+  "start a magit status buffer with magit-svn-mode on"
+  (interactive (list (if current-prefix-arg
+                         (magit-read-top-dir
+                          (> (prefix-numeric-value current-prefix-arg)
+                             4))
+                       (or (magit-get-top-dir default-directory)
+                           (magit-read-top-dir nil)))))
+  (magit-status dir)
+  (call-interactively 'magit-svn-mode))
+
+(setq magit-repo-dirs (directory-files "~/try" t "^[^.]+"))
+(defvar anything-c-source-magit-repos
+  '((name . "Magit Repos")
+    (init . (lambda ()
+              (require 'magit)))
+    (candidates . (lambda ()  (magit-list-repos magit-repo-dirs)))
+    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (action
+     ("Magit" . my-magit-svn)
+     ("Open Dir" . dired))
+    "See (info \"(emacs)magit\")."))
+(defun anything-c-magit-repos (&optional pattern)
+  "find all git repositories"
+  (interactive)
+  (setq magit-repo-dirs (directory-files "~/try" t "^[^.]+"))
+  (anything '(anything-c-source-magit-repos) pattern nil nil nil
+            "*anything javadoc*"))
+(global-set-key (kbd "<f10> G") 'anything-c-magit-repos)
+
+;; todotxt mode
+(require 'todotxt)
+(add-to-list 'auto-mode-alist '("todo.txt" . todotxt-mode))
+(global-set-key (kbd "<f10> SPC") 'todotxt)
+
+;; json-encode-and-replace
+(defun my-json-encode-and-replace (start end)
+  "Replace region  with its json string."
+  (interactive "r")
+  (kill-region start end)
+  (let ((json-encoding-pretty-print nil)) 
+    (condition-case nil
+        (prin1 (json-encode (json-read-from-string (substring-no-properties (current-kill 0))))
+               (current-buffer))
+      (error (message "Invalid expression")
+             (insert (current-kill 0))))))

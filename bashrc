@@ -118,3 +118,13 @@ function port-forward() {
 #              classpathref="maven-ant-tasks.classpath"/>
 #   </target>
 # </project>
+
+function create-svn-project-repo() {
+    local projectname=$1
+    local inits=$2
+    svn admin create /opt/svn-repo/$projectname
+    svn import $inits file:///opt/svn-repo/$projectname
+}
+
+# .npmrc
+# registry = http://registry.npmjs.vitecho.com
