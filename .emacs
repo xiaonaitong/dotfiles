@@ -38,7 +38,8 @@
       auto-save-default nil
       comint-prompt-read-only t
       default-major-mode 'text-mode
-      column-number-mode t)
+      column-number-mode t
+      wdired-allow-to-change-permissions t)
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (menu-bar-mode 0)
