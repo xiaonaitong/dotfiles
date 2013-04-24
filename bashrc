@@ -121,9 +121,10 @@ function port-forward() {
 
 function create-svn-project-repo() {
     local projectname=$1
-    local inits=$2
-    svn admin create /opt/svn-repo/$projectname
-    svn import $inits file:///opt/svn-repo/$projectname
+    local inits=/opt/svn-project-skeleton
+    local user="sudo -u www-data "
+    $user svnadmin create /opt/svn-repo/$projectname
+    $user svn import $inits file:///opt/svn-repo/$projectname -m "init project"
 }
 
 # .npmrc
