@@ -742,3 +742,4 @@ _
                (current-buffer))
       (error (message "Invalid expression")
              (insert (current-kill 0))))))
+(global-subword-mode)
