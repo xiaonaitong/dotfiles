@@ -7,7 +7,62 @@
       '(("ELPA" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
         ("marmalade" . "http://marmalade-repo.org/packages/")
-        ("SC" . "http://joseito.republika.pl/sunrise-commander/")))
+        ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+(defun mp-install-rad-packages ()
+  "Install only the sweetest of packages."
+  (interactive)
+  (package-refresh-contents)
+  (mapc '(lambda (package)
+           (unless (package-installed-p package)
+             (package-install package)))
+        '(all
+          anything
+          anything-config
+          anything-git-goto
+          ascii
+          auto-complete
+          caml
+          clojure-mode
+          color-theme
+          color-theme-sol...
+          dash
+          dired-single
+          expand-region
+          find-file-in-pr...
+          flycheck
+          flymake-easy
+          flymake-shell
+          groovy-mode
+          idle-highlight
+          idle-highlight-...
+          ido-ubiquitous
+          js2-mode
+          json-mode
+          magit
+          markdown-mode
+          mongo
+          monokai-theme
+          nrepl
+          nrepl-ritz
+          paredit
+          popup
+          s
+          scala-mode
+          slime
+          smex
+          soothe-theme
+          starter-kit
+          symbols-mode
+          todotxt
+          tuareg
+          visual-regexp
+          yaml-mode)))
+;;;(mp-install-rad-packages)
+
+(setq url-using-proxy t)
+(setq url-proxy-services '(("http". "localhost:8087")
+                           ("no_proxy". ".*localhost.*")))
 (package-initialize)
 ;;; user info
 (setq user-full-name "xiaonaitong"
@@ -124,11 +179,12 @@
 (ido-mode t)
 ;;color-theme
 (require 'color-theme)
-(require 'color-theme-calm-forest)
-(eval-after-load "color-theme"
-  '(progn
-;     (color-theme-solarized-dark)
-     (color-theme-calm-forest)))
+;; (require 'color-theme-calm-forest)
+;; (eval-after-load "color-theme"
+;;   '(progn
+;; ;     (color-theme-solarized-dark)
+;;      (color-theme-calm-forest)))
+(load-theme 'solarized-dark t)
 
 ;;key remap
 (define-key key-translation-map [?\[] [?\(])
@@ -317,6 +373,7 @@ it to the beginning of the line."
 ;;;zen-coding
 (require 'zencoding-mode)
 (add-hook 'sgml-mode-hook 'zencoding-mode)
+(add-hook 'css-mode-hook 'zencoding-mode)
 
 (defun forward-open-bracket ()
   "Move cursor to the next occurrence of left bracket or quotation mark."

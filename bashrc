@@ -127,5 +127,61 @@ function create-svn-project-repo() {
     $user svn import $inits file:///opt/svn-repo/$projectname -m "init project"
 }
 
+function add-svn-user() {
+    # create svn auth file
+    # sudo htpasswd -cs /opt/share/svn/svn-auth-file username
+    sudo htpasswd -s /opt/share/svn/svn-auth-file username
+}
+
 # .npmrc
 # registry = http://registry.npmjs.vitecho.com
+
+function install-bals() {
+    # adobeair may can't find gnome-keyring
+    sudo ln -s /usr/lib/i386-linux-gnu/libgnome-keyring.so.0.2.0 /usr/lib/libgnome-keyring.so.0.2.0
+    sudo ln -s /usr/lib/i386-linux-gnu/libgnome-keyring.so.0 /usr/lib/libgnome-keyring.so.0
+    sudo dpkg -i Downloads/adobeair_2.6.0.19170_i386.deb
+    sudo dpkg -i Downloads/MockupsForDesktop32bit.deb
+}
+
+# yum install from cd/dvd
+function yum-install-from-dvd() {
+    mount /dev/dvd /mnt
+    cat > /etc/yum.repos.d/local.repo <<EOF
+[local]
+Name="Local Installation"
+baseurl="file:///mnt"
+enabled=1
+gpgcheck=0
+EOF
+
+    yum groupinstall "X Window System"
+}
+
+# mysql reset root password
+# detail at http://dev.mysql.com/doc/refman/5.0/en/resetting-permissions.html
+function mysql-reset-root-pass() {
+    local newpass=$1
+    sudo mysqld_safe --skip-grant-tables
+    mysql <<EOF
+    UPDATE mysql.user SET Password=PASSWORD('$newpass')  WHERE User='root';
+    FLUSH PRIVILEGES;
+EOF
+
+    # grant remote root access
+    mysql <<EOF
+    create user 'root'@'%' identified by $newpass;
+    grant all on *.* to 'root'@'%';
+    FLUSH PRIVILEGES;
+EOF
+}
+
+# html css tips {
+#    overflow: hidden // see http://colinaarts.com/articles/the-magic-of-overflow-hidden/
+# }
+
+# zip without .git and node_modules
+function zip-without-git-and-node() {
+    local dest=$1
+    zip -9 -r --exclude=*.git*  --exclude=*node_modules* foo.zip $dest
+}
