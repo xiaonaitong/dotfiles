@@ -133,6 +133,19 @@ function add-svn-user() {
     sudo htpasswd -s /opt/share/svn/svn-auth-file username
 }
 
+function create-git-project-repo() {
+    local projectname=$1
+    local user="sudo -u www-data "
+    local projectrepo="/var/www/git/$projectname.git"
+    
+    $user mkdir $projectrepo
+
+    (
+        cd $projectrepo;
+        $user git --bare init;
+        $user git update-server-info;
+    )
+}
 # .npmrc
 # registry = http://registry.npmjs.vitecho.com
 
@@ -184,4 +197,17 @@ EOF
 function zip-without-git-and-node() {
     local dest=$1
     zip -9 -r --exclude=*.git*  --exclude=*node_modules* foo.zip $dest
+}
+
+# batch remove aws security groups
+function aws-remove-sg(){
+    aws ec2 describe-security-groups \
+        |grep GroupName |awk -F " " '{print $2}'|tr -d '",'|sort|uniq \
+        | xargs -I {} -n 1 aws ec2  delete-security-group --group-name "{}"
+}
+
+# uwsgi
+function uwsgi-start(){
+    # cd /home/xiao/try/distaster-tools/dragonfly/src
+    uwsgi --socket 127.0.0.1:8081 --wsgi-file dragonfly.py
 }

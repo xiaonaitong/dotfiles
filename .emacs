@@ -3,6 +3,8 @@
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/try/dotfiles/.emacs.d")
 (add-to-list 'load-path "~/try/emacs-w3m")
+(add-to-list 'load-path "~/try/anything-ack")
+(add-to-list 'load-path "~/try/sudo-tramp")
 (setq package-archives
       '(("ELPA" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
@@ -219,7 +221,7 @@
 (global-unset-key (kbd "<f10>"))
 (global-set-key (kbd "<f7>") 'split-window-vertically)
 (global-set-key (kbd "<f8>") 'split-window-horizontally)
-(global-set-key (kbd "<f12>") 'shell)
+(global-set-key (kbd "<f12>") 'other-window)
 (global-set-key (kbd "<f11>") 'other-window)
 (global-set-key (kbd "<f9> <f9>") 'delete-window)
 (global-set-key (kbd "<f9> f") 'delete-other-windows)
@@ -231,8 +233,8 @@
 (global-set-key (kbd "<f10> S") 'find-dired)
 (global-set-key (kbd "<f10> d") 'ido-dired)
 (global-set-key (kbd "<f10> f") 'my-anything)
-
 (global-set-key (kbd "<f10> g") 'my-anything-git-repo-or-file-cache)
+(global-set-key (kbd "<f10> a") 'anything-ack)
 (global-set-key (kbd "<f10> k") 'kill-current-buffer)
 (global-set-key (kbd "<f10> l") 'list-buffers)
 (global-set-key (kbd "<f10> o") 'find-file)
@@ -585,6 +587,7 @@ _
 ;;; load anything-config
 (require 'anything-config)
 (require 'anything-git-goto)
+(require 'anything-ack)
 (setq anything-c-adaptive-history-length 100)
 (defun my-anything ()
   "my anything sources contains bookmarks locatedb"
@@ -628,7 +631,7 @@ _
 (put 'narrow-to-region 'disabled nil)
 ;;; set default browser to chrome
 (setq browse-url-browser-function 'browse-url-generic
-          browse-url-generic-program "chromium-browser")
+          browse-url-generic-program "google-chrome")
 
 ;;; magit submodule
 (eval-after-load 'magit
@@ -786,6 +789,7 @@ _
 ;; todotxt mode
 (require 'todotxt)
 (add-to-list 'auto-mode-alist '("todo.txt" . todotxt-mode))
+(add-to-list 'auto-mode-alist '("done.txt" . todotxt-mode))
 (global-set-key (kbd "<f10> SPC") 'todotxt)
 
 ;; json-encode-and-replace
@@ -800,3 +804,11 @@ _
       (error (message "Invalid expression")
              (insert (current-kill 0))))))
 (global-subword-mode)
+
+;; tramp ssh controlmaster
+(setq tramp-ssh-controlmaster-options
+      (concat "-o ControlPath=/home/xiao/.ssh/control/%%r@%%h:%%p "
+              "-o ControlMaster=auto -o ControlPersist=yes"))
+
+(provide '.emacs)
+;;; .emacs ends here
