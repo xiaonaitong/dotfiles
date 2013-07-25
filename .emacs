@@ -59,7 +59,9 @@
           todotxt
           tuareg
           visual-regexp
-          yaml-mode)))
+          yaml-mode
+          inf-ruby
+          rvm)))
 ;;;(mp-install-rad-packages)
 
 (setq url-using-proxy t)
@@ -809,6 +811,10 @@ _
 (setq tramp-ssh-controlmaster-options
       (concat "-o ControlPath=/home/xiao/.ssh/control/%%r@%%h:%%p "
               "-o ControlMaster=auto -o ControlPersist=yes"))
+
+;; ruby rvm
+(require 'rvm)
+(add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
 
 (provide '.emacs)
 ;;; .emacs ends here
