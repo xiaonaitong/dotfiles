@@ -1,4 +1,6 @@
-;;; -*- coding: utf-8 -*-
+;;; .emacs --- main config
+;;; Commentary:
+;;; Code:
 (setq user-package-root "~/source/")
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/try/dotfiles/.emacs.d")
@@ -15,7 +17,7 @@
   "Install only the sweetest of packages."
   (interactive)
   (package-refresh-contents)
-  (mapc '(lambda (package)
+  (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
         '(all
@@ -138,7 +140,7 @@
   (add-hook 'shell-mode-hook hook))
 
 (defun truncate-lines ()
-  "toggle truncate long line into multi-line,used as hook for shell-mode "
+  "Toggle truncate long line into multi-line,used as hook for shell-mode."
   (toggle-truncate-lines 1))
 
 ;; clojure-mode
@@ -155,8 +157,8 @@
   (add-hook mode-hook 'paredit-mode-enable))
 ;; slime
 (defun load-slime ()
-  "load origin slime instead of swank-clojure internal slime
-   use it When needed to connect remote swank-clojure session or use lisp"
+  "Load origin slime instead of swank-clojure internal slime;
+use it When needed to connect remote swank-clojure session or use LISP."
   (interactive)
   (require 'slime)
   (slime-setup '(slime-js))
@@ -314,15 +316,12 @@
 
 ;;refresh buffer
 (defun refresh-file ()
-  "Refresh buffer from disk"
+  "Refresh buffer from disk."
     (interactive)
     (revert-buffer t (not (buffer-modified-p)) t))
 
 (defun smart-line-beginning ()
-  "Move point to the beginning of text
-on the current line; if that is already
-the current position of point, then move
-it to the beginning of the line."
+  "Move point to the beginning of text on the current line; if that is already the current position of point, then move it to the beginning of the line."
   (interactive)
   (if (bolp)
       (back-to-indentation)
@@ -363,8 +362,7 @@ it to the beginning of the line."
                      (and matching (char-syntax matching)))))))
 ;;; restore paredit-non-lisp comment style
 (defun my-overrided-paredit-comment-dwim ()
-  "override paredit-comment-dwim, when not in lisp family language
-  invoke default comment-dwim "
+  "Override `paredit-comment-dwim`, when not in LISP family language invoke default `comment-dwim`."
   (interactive)
   (if (not (member major-mode '(emacs-lisp-mode clojure-mode lisp-mode scheme-mode)))
       (call-interactively 'comment-dwim)
@@ -408,7 +406,7 @@ it to the beginning of the line."
   )
 
 (defun forward-in-bracket ()
-  "Move cursor to the next occurence of before-end-bracket"
+  "Move cursor to the next occurence of `before-end-bracket`."
   (interactive)
   (forward-char 2)
   (search-forward-regexp "</")
@@ -416,7 +414,7 @@ it to the beginning of the line."
 )
 
 (defun backward-in-bracket ()
-  "Move cursor to the next occurence of before-end-bracket"
+  "Move cursor to the next occurence of `before-end-bracket`."
   (interactive)
   (search-backward-regexp "</")
   (forward-char 0)
@@ -460,7 +458,7 @@ it to the beginning of the line."
 
 ;;; from http://www.xsteve.at/prg/emacs/power-user-tips.html
 (defun xsteve-ido-choose-from-recentf ()
-  "Use ido to select a recently opened file from the `recentf-list'"
+  "Use ido to select a recently opened file from the `recentf-list'."
   (interactive)
   (let ((home (expand-file-name (getenv "HOME"))))
     (find-file
@@ -477,7 +475,7 @@ it to the beginning of the line."
 (require 'magit-svn)
 
 (defun magit-svn-start ()
-  "start a magit status buffer with magit-svn-mode on"
+  "Start a magit status buffer with `magit-svn-mode' on."
   (interactive)
   (call-interactively 'magit-status)
   (call-interactively 'magit-svn-mode))
@@ -550,7 +548,7 @@ _
 
 ;;; based on http://www.millingtons.eclipse.co.uk/glyn/dotemacs.html
 (defun swap-windows ()
-  "swap first 2 window, keep cursor window"
+  "Swap first 2 window, keep cursor window."
   (interactive)
   (let* ((w1 (first (window-list)))
          (w2 (second (window-list)))
@@ -563,7 +561,7 @@ _
     (set-window-start w1 s2)
     (set-window-start w2 s1)))
 (defun reverse-swap-windows ()
-  "just like swap-windows but in opposite direction"
+  "Just like swap-windows but in opposite direction."
   (interactive)
   (swap-windows)
   (other-window 1))
@@ -572,13 +570,13 @@ _
   (reverse (cons (car lst)
                  (reverse (cdr lst)))))
 (defun cycle-windows ()
-  "cycle windows"
+  "Cycle windows."
   (interactive)
   (mapcar* 'set-window-buffer (window-list)
            (my-cycle (mapcar 'window-buffer (window-list)))))
 
 (defun prev-other-window ()
-  "prev other window"
+  "Prev other window."
   (interactive)
   (other-window -1))
 
@@ -592,7 +590,7 @@ _
 (require 'anything-ack)
 (setq anything-c-adaptive-history-length 100)
 (defun my-anything ()
-  "my anything sources contains bookmarks locatedb"
+  "My anything sources contain bookmarks locatedb."
   (interactive)
   (anything-other-buffer '(anything-c-source-bookmarks
                            anything-c-source-buffers+
@@ -601,9 +599,9 @@ _
                            anything-c-source-locate)
                          "*my-anything-buffer*"))
 (defvar cached-files nil
-  "record cached filecache directories")
+  "Record cached filecache directories.")
 (defun my-anything-git-repo-or-file-cache ()
-  "find file in git repo or file cached dir"
+  "Find file in git repo or file cached dir."
   (interactive)
   (if (anything-git-goto-find-git-repo default-directory)
       (call-interactively 'anything-git-goto )
@@ -617,9 +615,10 @@ _
 (setq anything-c-adaptive-history-length 100)
 ;;; restore or create *scratch* buffer
 (defun restore-scratch-buffer (&optional num)
-  "create *scracth* buffer, if not present.
-   with no prefix, create *scratch-n* buffer, n is auto incremented number
-   with number prefix like 8, will create *scratch-8* buffer"
+  "Create *scracth* buffer, if not present.
+with no prefix, create *scratch-n* buffer, 
+n is auto incremented number or NUM,
+with number prefix like 8, will create *scratch-8* buffer"
   (interactive "p")
   (when (= num 1)
       (progn
@@ -646,9 +645,9 @@ _
             (local-set-key (kbd ",") 'my-toggle-magit-refresh)))
 ;;; temporary solution for too much refresh time
 (defun my-toggle-magit-refresh ()
-  "tempoary disable magit refresh,
-   for large repo, refresh take too much time
-   when staging untracked files, we don't want it to refresh"
+  "Tempoary disable magit refresh;
+for large repo, refresh take too much time
+when staging untracked files, we don't want it to refresh"
   (interactive)
   (setq magit-refresh-pending (not magit-refresh-pending)))
 
@@ -722,7 +721,7 @@ _
 
 ;; scala-mode
 (defun scala-switch-to-interpreter-other-window ()
-  "Switch to buffer containing the interpreter"
+  "Switch to buffer containing the interpreter."
   (interactive)
   (if (scala-interpreter-running-p-1)
       (switch-to-buffer-other-window scala-inf-buffer-name)
@@ -759,7 +758,7 @@ _
 ;;       (nconc w3m-command-arguments
 ;;              '("-o" "http_proxy=http://109.119.20.228:8087")))
 (defun my-magit-svn (dir)
-  "start a magit status buffer with magit-svn-mode on"
+  "Start a magit status buffer with magit-svn-mode on DIR."
   (interactive (list (if current-prefix-arg
                          (magit-read-top-dir
                           (> (prefix-numeric-value current-prefix-arg)
@@ -781,7 +780,7 @@ _
      ("Open Dir" . dired))
     "See (info \"(emacs)magit\")."))
 (defun anything-c-magit-repos (&optional pattern)
-  "find all git repositories"
+  "Find all git repositories with PATTERN."
   (interactive)
   (setq magit-repo-dirs (directory-files "~/try" t "^[^.]+"))
   (anything '(anything-c-source-magit-repos) pattern nil nil nil
@@ -796,7 +795,7 @@ _
 
 ;; json-encode-and-replace
 (defun my-json-encode-and-replace (start end)
-  "Replace region  with its json string."
+  "Replace region (START END) with its json string."
   (interactive "r")
   (kill-region start end)
   (let ((json-encoding-pretty-print nil)) 
@@ -812,9 +811,11 @@ _
       (concat "-o ControlPath=/home/xiao/.ssh/control/%%r@%%h:%%p "
               "-o ControlMaster=auto -o ControlPersist=yes"))
 
-;; ruby rvm
+;;; ruby rvm
 (require 'rvm)
 (add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
+;;; sudo tramp
+(require 'sudo-tramp)
 
 (provide '.emacs)
 ;;; .emacs ends here
