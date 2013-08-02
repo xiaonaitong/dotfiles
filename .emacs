@@ -746,8 +746,10 @@ when staging untracked files, we don't want it to refresh"
           (function (lambda ()
                       (local-set-key "b" 'browse-url-of-dired-file))))
 ;;flycheck
-(add-hook 'prog-mode-hook 'flycheck-mode)
-(add-hook 'text-mode-hook 'flycheck-mode)
+;; (add-hook 'prog-mode-hook 'flycheck-mode)
+(dolist (mode-hook '(js2-mode-hook python-mode-hook css-mode-hook html-mode-hook
+                                   ruby-mode-hook c++-mode-hook c-mode-hook))
+  (add-hook mode-hook 'flycheck-mode))
 
 ;;anything-c-javadoc
 (require 'anything-c-javadoc)
@@ -816,6 +818,10 @@ when staging untracked files, we don't want it to refresh"
 (add-hook 'ruby-mode-hook 'rvm-activate-corresponding-ruby)
 ;;; sudo tramp
 (require 'sudo-tramp)
+
+;;; workaround flycheck
+(add-hook 'prog-mode-hook 'outline-minor-mode)
+(defun org-reveal () "NOOP." ())
 
 (provide '.emacs)
 ;;; .emacs ends here
