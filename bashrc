@@ -211,3 +211,9 @@ function uwsgi-start(){
     # cd /home/xiao/try/distaster-tools/dragonfly/src
     uwsgi --socket 127.0.0.1:8081 --wsgi-file dragonfly.py
 }
+
+# ruby rvm usage
+function rvm-setup(){
+    rvm use 1.9.3@rails --create
+    echo "rvm use 1.9.3@rails" > .rvmrc 
+}
