@@ -710,7 +710,8 @@ when staging untracked files, we don't want it to refresh"
 ;;; some useful file auto mode
 (add-to-list 'auto-mode-alist '("bashrc$" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("bash_aliases$" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("\\.gitconfig$" . conf-mode))
+(add-to-list 'auto-mode-alist '("\\.gitconfig$\\|my.cnf$" . conf-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 ;;; nrepl
 (add-hook 'nrepl-interaction-mode-hook
   'nrepl-turn-on-eldoc-mode)
