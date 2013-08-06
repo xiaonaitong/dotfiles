@@ -4,8 +4,6 @@
 (setq user-package-root "~/source/")
 (add-to-list 'load-path "~/try/dotfiles/.emacs.d")
 (add-to-list 'load-path "~/try/emacs-w3m")
-(add-to-list 'load-path "~/try/anything-ack")
-(add-to-list 'load-path "~/try/sudo-tramp")
 (setq package-archives
       '(("ELPA" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
