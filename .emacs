@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 (setq user-package-root "~/source/")
-(add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/try/dotfiles/.emacs.d")
 (add-to-list 'load-path "~/try/emacs-w3m")
 (add-to-list 'load-path "~/try/anything-ack")
@@ -20,50 +19,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(all
-          anything
-          anything-config
-          anything-git-goto
-          ascii
-          auto-complete
-          caml
-          clojure-mode
-          color-theme
-          color-theme-sol...
-          dash
-          dired-single
-          expand-region
-          find-file-in-pr...
-          flycheck
-          flymake-easy
-          flymake-shell
-          groovy-mode
-          idle-highlight
-          idle-highlight-...
-          ido-ubiquitous
-          js2-mode
-          json-mode
-          magit
-          markdown-mode
-          mongo
-          monokai-theme
-          nrepl
-          nrepl-ritz
-          paredit
-          popup
-          s
-          scala-mode
-          slime
-          smex
-          soothe-theme
-          starter-kit
-          symbols-mode
-          todotxt
-          tuareg
-          visual-regexp
-          yaml-mode
-          inf-ruby
-          rvm)))
+        '(ethan-wspace quack zencoding-mode recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenv tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized color-theme clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all)))
 ;;;(mp-install-rad-packages)
 
 (setq url-using-proxy t)
@@ -701,7 +657,6 @@ when staging untracked files, we don't want it to refresh"
 (setq tramp-default-method "ssh")
 
 ;;; shell-switcher
-(add-to-list 'load-path "~/try/shell-switcher")
 (require 'shell-switcher)
 (setq shell-switcher-mode t
       shell-switcher-new-shell-function 'shell-switcher-make-shell)
@@ -823,6 +778,9 @@ when staging untracked files, we don't want it to refresh"
 ;;; workaround flycheck
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 (defun org-reveal () "NOOP." ())
+
+;;; recompile packages
+;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
 (provide '.emacs)
 ;;; .emacs ends here
