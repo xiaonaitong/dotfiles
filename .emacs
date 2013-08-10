@@ -17,7 +17,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(ethan-wspace quack zencoding-mode recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenv tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized color-theme clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all)))
+        '(ethan-wspace quack zencoding-mode recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized color-theme clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all)))
 ;;;(mp-install-rad-packages)
 
 (setq url-using-proxy t)
@@ -456,8 +456,6 @@ if __name__ == '__main__':
 (add-hook 'python-mode-hook
           (function (lambda ()
                       (local-set-key (kbd "C-c p") 'python-header-skel))))
-(require 'virtualenv)
-
 ;; html skeleton
 (define-skeleton html-skel
   "Insert an empty html page"
@@ -703,7 +701,9 @@ when staging untracked files, we don't want it to refresh"
 ;; (add-hook 'prog-mode-hook 'flycheck-mode)
 (dolist (mode-hook '(js2-mode-hook python-mode-hook css-mode-hook html-mode-hook
                                    ruby-mode-hook c++-mode-hook c-mode-hook))
-  (add-hook mode-hook 'flycheck-mode))
+  (add-hook mode-hook (lambda ()
+                        (unless (tramp-tramp-file-p (buffer-file-name))
+                          (flycheck-mode)))))
 
 ;;anything-c-javadoc
 (require 'anything-c-javadoc)
