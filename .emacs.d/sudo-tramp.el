@@ -20,7 +20,7 @@
              (set 'sudo-tramp-prefix "/sudo:")
              )
     (progn (set 'final-split splitname)
-           (set 'sudo-tramp-prefix (concat sudo-tramp-prefix "root@localhost:")))
+           (set 'sudo-tramp-prefix "/sudo:root@localhost:"))
     )
   (set 'final-fn (concat sudo-tramp-prefix (mapconcat (lambda (e) e) final-split ":")))
   (message "splitname is %s" splitname)
