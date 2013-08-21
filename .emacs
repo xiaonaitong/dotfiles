@@ -17,7 +17,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(ethan-wspace quack zencoding-mode recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized color-theme clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized color-theme clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree)))
 ;;;(mp-install-rad-packages)
 
 (setq url-using-proxy t)
@@ -326,10 +326,10 @@ use it When needed to connect remote swank-clojure session or use LISP."
   (define-key paredit-mode-map
     [remap paredit-comment-dwim]
     'my-overrided-paredit-comment-dwim))
-;;;zen-coding
-(require 'zencoding-mode)
-(add-hook 'sgml-mode-hook 'zencoding-mode)
-(add-hook 'css-mode-hook 'zencoding-mode)
+(eval-after-load 'emmet-mode
+  (progn
+    (add-hook 'sgml-mode-hook 'emmet-mode)
+    (add-hook 'css-mode-hook 'emmet-mode)))
 
 (defun forward-open-bracket ()
   "Move cursor to the next occurrence of left bracket or quotation mark."
