@@ -17,19 +17,16 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized color-theme clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm)))
 ;;;(mp-install-rad-packages)
 
-(setq url-using-proxy t)
-(setq url-proxy-services '(("http". "localhost:8087")
-                           ("no_proxy". ".*localhost.*")))
+;; (setq url-using-proxy t)
+;; (setq url-proxy-services '(("http". "localhost:8087")
+;;                            ("no_proxy". ".*localhost.*")))
 (package-initialize)
 ;;; user info
 (setq user-full-name "xiaonaitong"
       user-mail-address "xiaonaitong@gmail.com")
-;;;mac specific
-(setq mac-option-modifier 'super
-      mac-command-modifier 'meta)
 (when (eq system-type 'darwin)
       ;; default Latin font (e.g. Consolas)
       ;;(set-face-attribute 'default nil :family "Consolas")
@@ -137,15 +134,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
 ;;use ido
 (require 'ido)
 (ido-mode t)
-;;color-theme
-(require 'color-theme)
-;; (require 'color-theme-calm-forest)
-;; (eval-after-load "color-theme"
-;;   '(progn
-;; ;     (color-theme-solarized-dark)
-;;      (color-theme-calm-forest)))
 (load-theme 'solarized-dark t)
-
 ;;key remap
 (define-key key-translation-map [?\[] [?\(])
 (define-key key-translation-map [?\]] [?\)])
@@ -298,12 +287,12 @@ use it When needed to connect remote swank-clojure session or use LISP."
      (progn
        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
 ;;; autocomplete
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories (expand-file-name "auto-complete-1.3.1/dict" user-package-root))
-(setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
-(global-auto-complete-mode t)
-(add-to-list 'ac-modes 'inferior-scheme-mode)
-(add-to-list 'ac-modes 'shell-mode)
+;; (require 'auto-complete-config)
+;;; (add-to-list 'ac-dictionary-directories (expand-file-name "auto-complete-1.3.1/dict" user-package-root))
+;;; (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
+;;; (global-auto-complete-mode t)
+;;; (add-to-list 'ac-modes 'inferior-scheme-mode)
+;;; (add-to-list 'ac-modes 'shell-mode)
 (setq ac-auto-start 2)
 (setq ac-ignore-case nil)
 
@@ -685,7 +674,7 @@ when staging untracked files, we don't want it to refresh"
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
 ;;w3m
-(require 'w3m-load)
+;;; (require 'w3m-load)
 (setq w3m-use-favicon nil)
 (setq w3m-command-arguments '("-cookie" "-F"))
 (setq w3m-use-cookies t)
