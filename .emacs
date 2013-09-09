@@ -540,6 +540,7 @@ _
 (require 'anything-config)
 (require 'anything-git-goto)
 (require 'anything-ack)
+(require 'yari)
 (setq anything-c-adaptive-history-length 100)
 (defun my-anything ()
   "My anything sources contain bookmarks locatedb."
