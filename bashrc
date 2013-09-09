@@ -217,3 +217,6 @@ function rvm-setup(){
     rvm use 1.9.3@rails --create
     echo "rvm use 1.9.3@rails" > .rvmrc 
 }
+
+# about python attribute and methods
+# see http://www.cafepy.com/article/python_attributes_and_methods/python_attributes_and_methods.html#attribute-search-summary
