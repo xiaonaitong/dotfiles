@@ -782,6 +782,17 @@ when staging untracked files, we don't want it to refresh"
 (global-undo-tree-mode)
 ;;; recompile packages
 ;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+(defun enable-dired-omit-mode ()
+  (dired-omit-mode 1))
+
+(add-hook 'dired-load-hook
+          '(lambda ()
+             (require 'dired-x)
+             (setq-default dired-omit-files-p t)
+             ;; ignore pyc
+             (setq dired-omit-files
+                   (concat dired-omit-files ".pyc$"))
+             (add-hook 'dired-mode-hook 'enable-dired-omit-mode)))
 
 (provide '.emacs)
 ;;; .emacs ends here
