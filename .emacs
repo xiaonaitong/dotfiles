@@ -168,7 +168,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
 (global-unset-key (kbd "<f10>"))
 (global-set-key (kbd "<f7>") 'split-window-vertically)
 (global-set-key (kbd "<f8>") 'split-window-horizontally)
-(global-set-key (kbd "<f12>") 'other-window)
+(global-set-key (kbd "<f12>") 'other-window-reverse)
 (global-set-key (kbd "<f11>") 'other-window)
 (global-set-key (kbd "<f9> <f9>") 'delete-window)
 (global-set-key (kbd "<f9> f") 'delete-other-windows)
@@ -770,6 +770,11 @@ when staging untracked files, we don't want it to refresh"
 (global-undo-tree-mode)
 ;;; recompile packages
 ;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+
+;;other-window-reverse
+(defun other-window-reverse ()
+  (interactive)
+  (other-window -1))
 
 (provide '.emacs)
 ;;; .emacs ends here
