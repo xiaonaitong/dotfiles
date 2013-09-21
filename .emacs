@@ -736,7 +736,6 @@ when staging untracked files, we don't want it to refresh"
 (require 'todotxt)
 (add-to-list 'auto-mode-alist '("todo.txt" . todotxt-mode))
 (add-to-list 'auto-mode-alist '("done.txt" . todotxt-mode))
-(global-set-key (kbd "<f10> SPC") 'todotxt)
 
 ;; json-encode-and-replace
 (defun my-json-encode-and-replace (start end)
@@ -775,6 +774,26 @@ when staging untracked files, we don't want it to refresh"
 (defun other-window-reverse ()
   (interactive)
   (other-window -1))
+
+;;; org mode for todo list management
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+(setq org-agenda-files (file-expand-wildcards "~/.org/*.org"))
+(setq org-default-notes-file "~/.org/todo.org")
+(require 'remember)
+(org-remember-insinuate)
+(setq org-remember-clock-out-on-exit nil)
+(setq org-remember-store-without-prompt t)
+(setq org-remember-default-headline "Tasks")
+(setq org-remember-templates
+      (quote
+       (("todo" ?t "** TODO %? \nCREATED: %U" nil nil nil)))) 
+
+(global-set-key (kbd "<f9> SPC") 'org-remember)
+(global-set-key (kbd "<f10> SPC") (lambda ()
+                                    (interactive)
+                                    (find-file org-default-notes-file)))
 
 (provide '.emacs)
 ;;; .emacs ends here
