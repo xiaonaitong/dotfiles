@@ -787,8 +787,11 @@ when staging untracked files, we don't want it to refresh"
 (setq org-remember-store-without-prompt t)
 (setq org-remember-default-headline "Tasks")
 (setq org-remember-templates
-      (quote
-       (("todo" ?t "** TODO %? \nCREATED: %U" nil nil nil)))) 
+      '((?t "* TODO %?\n  %i\n  %a" "~/.org/todo.org")
+        (?r "* TODO %?\n  %i" "~/.org/todo.org")
+        (?j "* %U %?\n\n  %i\n  %a" "~/.org/journal.org" "Journal")
+        (?w "* %U %?\n\n  %i" "~/.org/journal.org" "Weekly Review")
+        (?m "* %^{Title}\n  %i\n  %a" "~/.org/misc.org" "Misc")))
 
 (global-set-key (kbd "<f9> SPC") 'org-remember)
 (global-set-key (kbd "<f10> SPC") (lambda ()
