@@ -179,7 +179,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
 (global-unset-key (kbd "<f10>"))
 (global-set-key (kbd "<f7>") 'split-window-vertically)
 (global-set-key (kbd "<f8>") 'split-window-horizontally)
-(global-set-key (kbd "<f12>") 'other-window)
+(global-set-key (kbd "<f12>") 'prev-other-window)
 (global-set-key (kbd "<f11>") 'other-window)
 (global-set-key (kbd "<f9> <f9>") 'delete-window)
 (global-set-key (kbd "<f9> f") 'delete-other-windows)
@@ -535,7 +535,6 @@ _
 (global-set-key (kbd "<f9> s") 'swap-windows)
 (global-set-key (kbd "<f9> S") 'cycle-windows)
 (global-set-key (kbd "C-<f9>") 'reverse-swap-windows)
-(global-set-key (kbd "M-<f11>") 'prev-other-window)
 ;;; load anything-config
 (require 'anything-config)
 (require 'anything-git-goto)
