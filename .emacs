@@ -798,5 +798,16 @@ when staging untracked files, we don't want it to refresh"
                                     (interactive)
                                     (find-file org-default-notes-file)))
 
+;;; auctex
+(setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
+(setq exec-path (append exec-path '("/usr/texbin")))
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
+(setq TeX-PDF-mode t)
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+            (turn-on-reftex)
+            (setq reftex-plug-into-AUCTeX t)))
+
 (provide '.emacs)
 ;;; .emacs ends here
