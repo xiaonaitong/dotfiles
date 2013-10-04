@@ -17,7 +17,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm groovy-mode)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -697,7 +697,9 @@ when staging untracked files, we don't want it to refresh"
 ;;anything-c-javadoc
 (require 'anything-c-javadoc)
 (setq anything-c-javadoc-sources (quote (anything-c-source-javadoc-classes anything-c-source-javadoc-indexes)))
-(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/" "http://static.springsource.org/spring/docs/3.1.x/javadoc-api/")))
+
+(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/" )))
+
 (global-set-key (kbd "<f10> j") 'anything-c-javadoc)
 ;; (setq w3m-command-arguments
 ;;       (nconc w3m-command-arguments
@@ -803,11 +805,16 @@ when staging untracked files, we don't want it to refresh"
 (setq exec-path (append exec-path '("/usr/texbin")))
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
-(setq TeX-PDF-mode t)
-(add-hook 'LaTeX-mode-hook
+(add-hook 'latex-mode-hook
           (lambda ()
+            (setq TeX-PDF-mode t)
+            (setq TeX-show-compilation t)
+            (setq TeX-engine 'xetex)
             (turn-on-reftex)
             (setq reftex-plug-into-AUCTeX t)))
 
+;;; gradle
+(setq auto-mode-alist
+   (cons '("\\.gradle\\'" . groovy-mode) auto-mode-alist))
 (provide '.emacs)
 ;;; .emacs ends here
