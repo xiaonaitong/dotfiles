@@ -17,7 +17,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -786,6 +786,7 @@ when staging untracked files, we don't want it to refresh"
 (setq org-log-done t)
 (setq org-agenda-files (file-expand-wildcards "~/.org/*.org"))
 (setq org-default-notes-file "~/.org/todo.org")
+(require 'org)
 (require 'remember)
 (org-remember-insinuate)
 (setq org-remember-clock-out-on-exit nil)
@@ -805,17 +806,21 @@ when staging untracked files, we don't want it to refresh"
 
 ;;; auctex
 ;; TODO this mac specific
-(setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
-(setq exec-path (append exec-path '("/usr/texbin")))
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
-(add-hook 'latex-mode-hook
-          (lambda ()
-            (setq TeX-PDF-mode t)
-            (setq TeX-show-compilation t)
-            (setq TeX-engine 'xetex)
-            (turn-on-reftex)
-            (setq reftex-plug-into-AUCTeX t)))
+;;; need to install auctex.el manually
+;;; auctex package in elpa is broken
+(if (eq system-type 'darwin)
+    (progn
+      (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
+      (setq exec-path (append exec-path '("/usr/texbin")))
+      (load "auctex.el" nil t t)
+      (load "preview-latex.el" nil t t)
+      (add-hook 'latex-mode-hook
+                (lambda ()
+                  (setq TeX-PDF-mode t)
+                  (setq TeX-show-compilation t)
+                  (setq TeX-engine 'xetex)
+                  (turn-on-reftex)
+                  (setq reftex-plug-into-AUCTeX t)))))
 
 ;;; gradle
 (setq auto-mode-alist
