@@ -17,19 +17,16 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized color-theme clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree enh-ruby-mode)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev org nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode)))
 ;;;(mp-install-rad-packages)
 
-(setq url-using-proxy t)
-(setq url-proxy-services '(("http". "localhost:8087")
-                           ("no_proxy". ".*localhost.*")))
+;; (setq url-using-proxy t)
+;; (setq url-proxy-services '(("http". "localhost:8087")
+;;                            ("no_proxy". ".*localhost.*")))
 (package-initialize)
 ;;; user info
 (setq user-full-name "xiaonaitong"
       user-mail-address "xiaonaitong@gmail.com")
-;;;mac specific
-(setq mac-option-modifier 'super
-      mac-command-modifier 'meta)
 (when (eq system-type 'darwin)
       ;; default Latin font (e.g. Consolas)
       ;;(set-face-attribute 'default nil :family "Consolas")
@@ -137,15 +134,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
 ;;use ido
 (require 'ido)
 (ido-mode t)
-;;color-theme
-(require 'color-theme)
-;; (require 'color-theme-calm-forest)
-;; (eval-after-load "color-theme"
-;;   '(progn
-;; ;     (color-theme-solarized-dark)
-;;      (color-theme-calm-forest)))
 (load-theme 'solarized-dark t)
-
 ;;key remap
 (define-key key-translation-map [?\[] [?\(])
 (define-key key-translation-map [?\]] [?\)])
@@ -298,12 +287,12 @@ use it When needed to connect remote swank-clojure session or use LISP."
      (progn
        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
 ;;; autocomplete
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories (expand-file-name "auto-complete-1.3.1/dict" user-package-root))
-(setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
-(global-auto-complete-mode t)
-(add-to-list 'ac-modes 'inferior-scheme-mode)
-(add-to-list 'ac-modes 'shell-mode)
+;; (require 'auto-complete-config)
+;;; (add-to-list 'ac-dictionary-directories (expand-file-name "auto-complete-1.3.1/dict" user-package-root))
+;;; (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
+;;; (global-auto-complete-mode t)
+;;; (add-to-list 'ac-modes 'inferior-scheme-mode)
+;;; (add-to-list 'ac-modes 'shell-mode)
 (setq ac-auto-start 2)
 (setq ac-ignore-case nil)
 
@@ -685,7 +674,7 @@ when staging untracked files, we don't want it to refresh"
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
 ;;w3m
-(require 'w3m-load)
+;;; (require 'w3m-load)
 (setq w3m-use-favicon nil)
 (setq w3m-command-arguments '("-cookie" "-F"))
 (setq w3m-use-cookies t)
@@ -708,7 +697,9 @@ when staging untracked files, we don't want it to refresh"
 ;;anything-c-javadoc
 (require 'anything-c-javadoc)
 (setq anything-c-javadoc-sources (quote (anything-c-source-javadoc-classes anything-c-source-javadoc-indexes)))
-(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/" "http://static.springsource.org/spring/docs/3.1.x/javadoc-api/")))
+
+(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/" )))
+
 (global-set-key (kbd "<f10> j") 'anything-c-javadoc)
 ;; (setq w3m-command-arguments
 ;;       (nconc w3m-command-arguments
@@ -747,7 +738,6 @@ when staging untracked files, we don't want it to refresh"
 (require 'todotxt)
 (add-to-list 'auto-mode-alist '("todo.txt" . todotxt-mode))
 (add-to-list 'auto-mode-alist '("done.txt" . todotxt-mode))
-(global-set-key (kbd "<f10> SPC") 'todotxt)
 
 ;; json-encode-and-replace
 (defun my-json-encode-and-replace (start end)
@@ -789,5 +779,47 @@ when staging untracked files, we don't want it to refresh"
           (function (lambda ()
                       (setq dired-omit-files-p t)
                       (dired-omit-mode 1))))
+
+;;; org mode for todo list management
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+(setq org-agenda-files (file-expand-wildcards "~/.org/*.org"))
+(setq org-default-notes-file "~/.org/todo.org")
+(require 'remember)
+(org-remember-insinuate)
+(setq org-remember-clock-out-on-exit nil)
+(setq org-remember-store-without-prompt t)
+(setq org-remember-default-headline "Tasks")
+(setq org-remember-templates
+      '((?t "* TODO %?\n  %i\n  %a" "~/.org/todo.org")
+        (?r "* TODO %?\n  %i" "~/.org/todo.org")
+        (?j "* %U %?\n\n  %i\n  %a" "~/.org/journal.org" "Journal")
+        (?w "* %U %?\n\n  %i" "~/.org/journal.org" "Weekly Review")
+        (?m "* %^{Title}\n  %i\n  %a" "~/.org/misc.org" "Misc")))
+
+(global-set-key (kbd "<f9> SPC") 'org-remember)
+(global-set-key (kbd "<f10> SPC") (lambda ()
+                                    (interactive)
+                                    (find-file org-default-notes-file)))
+
+;;; auctex
+;; TODO this mac specific
+(setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
+(setq exec-path (append exec-path '("/usr/texbin")))
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
+(add-hook 'latex-mode-hook
+          (lambda ()
+            (setq TeX-PDF-mode t)
+            (setq TeX-show-compilation t)
+            (setq TeX-engine 'xetex)
+            (turn-on-reftex)
+            (setq reftex-plug-into-AUCTeX t)))
+
+;;; gradle
+(setq auto-mode-alist
+   (cons '("\\.gradle\\'" . groovy-mode) auto-mode-alist))
+
 (provide '.emacs)
 ;;; .emacs ends here
