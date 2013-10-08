@@ -220,3 +220,9 @@ function rvm-setup(){
 
 # about python attribute and methods
 # see http://www.cafepy.com/article/python_attributes_and_methods/python_attributes_and_methods.html#attribute-search-summary
+
+# git archive zip
+# git archive --format zip --output /full/path/to/zipfile.zip master
+
+# mongodb pretty print
+# db.user.find().pretty function () { this._prettyShell = true; return this; } 
