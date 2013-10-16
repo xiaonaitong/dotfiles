@@ -17,7 +17,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg todotxt symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -206,7 +206,8 @@ use it When needed to connect remote swank-clojure session or use LISP."
 (global-set-key (kbd "M-j") 'new-line-at-end)
 (global-set-key (kbd "M-<f10>") 'just-one-space)
 (global-set-key (kbd "<f1> <f1>") 'man)
-
+(global-set-key (kbd "<f1> j q") 'anything-htmldoc-jquery)
+(global-set-key (kbd "<f1> j d") 'anything-htmldoc-jdk6)
 ;;; programming layout
 ;;; from http://dacap.com.ar/programming/keyboard-layout/
 (global-unset-key (kbd "M-m"))
@@ -694,13 +695,6 @@ when staging untracked files, we don't want it to refresh"
                         (unless (tramp-tramp-file-p (buffer-file-name))
                           (flycheck-mode)))))
 
-;;anything-c-javadoc
-(require 'anything-c-javadoc)
-(setq anything-c-javadoc-sources (quote (anything-c-source-javadoc-classes anything-c-source-javadoc-indexes)))
-
-(setq anything-c-javadoc-dirs (quote ("http://docs.oracle.com/javase/6/docs/api/" )))
-
-(global-set-key (kbd "<f10> j") 'anything-c-javadoc)
 ;; (setq w3m-command-arguments
 ;;       (nconc w3m-command-arguments
 ;;              '("-o" "http_proxy=http://109.119.20.228:8087")))
@@ -733,11 +727,6 @@ when staging untracked files, we don't want it to refresh"
   (anything '(anything-c-source-magit-repos) pattern nil nil nil
             "*anything javadoc*"))
 (global-set-key (kbd "<f10> G") 'anything-c-magit-repos)
-
-;; todotxt mode
-(require 'todotxt)
-(add-to-list 'auto-mode-alist '("todo.txt" . todotxt-mode))
-(add-to-list 'auto-mode-alist '("done.txt" . todotxt-mode))
 
 ;; json-encode-and-replace
 (defun my-json-encode-and-replace (start end)
@@ -825,6 +814,14 @@ when staging untracked files, we don't want it to refresh"
 ;;; gradle
 (setq auto-mode-alist
    (cons '("\\.gradle\\'" . groovy-mode) auto-mode-alist))
+
+;;; tagedit
+(eval-after-load "sgml-mode"
+  '(progn
+     (require 'tagedit)
+     (tagedit-add-paredit-like-keybindings)
+     (define-key tagedit-mode-map (kbd "M-k") 'tagedit-kill-attribute)
+     (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))))
 
 (provide '.emacs)
 ;;; .emacs ends here
