@@ -823,5 +823,15 @@ when staging untracked files, we don't want it to refresh"
      (define-key tagedit-mode-map (kbd "M-k") 'tagedit-kill-attribute)
      (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))))
 
+;;; scons
+(setq auto-mode-alist
+   (cons '("SConstruct" . python-mode) auto-mode-alist))
+;;; disable flycheck mode on SConstruct files
+;;; maybe there is a better way, I just don't know
+(add-hook 'flycheck-mode-hook (lambda () (if (and (string= (buffer-name) "SConstruct")
+                                             (boundp 'flycheck-mode)
+                                             flycheck-mode)
+                                     (flycheck-mode -1))))
+
 (provide '.emacs)
 ;;; .emacs ends here
