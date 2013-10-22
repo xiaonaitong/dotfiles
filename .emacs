@@ -833,5 +833,12 @@ when staging untracked files, we don't want it to refresh"
                                              flycheck-mode)
                                      (flycheck-mode -1))))
 
+;;; proxy setting
+(setq url-proxy-services '(("http". "localhost:8087")
+                           ("no_proxy". ".*localhost.*")))
+(defun toggle-proxy ()
+  (interactive)
+  (setq url-using-proxy (not url-using-proxy)))
+
 (provide '.emacs)
 ;;; .emacs ends here
