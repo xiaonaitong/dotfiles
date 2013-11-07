@@ -1,7 +1,6 @@
 ;;; .emacs --- main config
 ;;; Commentary:
 ;;; Code:
-(setq user-package-root "~/source/")
 (add-to-list 'load-path "~/try/dotfiles/.emacs.d")
 (add-to-list 'load-path "~/try/emacs-w3m")
 (setq package-archives
@@ -17,7 +16,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-git-goto anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -180,7 +179,8 @@ use it When needed to connect remote swank-clojure session or use LISP."
 (global-set-key (kbd "<f10> S") 'find-dired)
 (global-set-key (kbd "<f10> d") 'ido-dired)
 (global-set-key (kbd "<f10> f") 'my-anything)
-(global-set-key (kbd "<f10> g") 'my-anything-git-repo-or-file-cache)
+(global-set-key (kbd "<f10> g") 'my-anything-dvcs-repo-or-file-cache)
+(global-set-key (kbd "<f10> j") 'anything-goto-subdir)
 (global-set-key (kbd "<f10> a") 'anything-ack)
 (global-set-key (kbd "<f10> k") 'kill-current-buffer)
 (global-set-key (kbd "<f10> l") 'list-buffers)
@@ -287,13 +287,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
        (list (region-beginning) (region-end))
      (progn
        (list (line-beginning-position) (line-beginning-position 2)) ) ) ))
-;;; autocomplete
-;; (require 'auto-complete-config)
-;;; (add-to-list 'ac-dictionary-directories (expand-file-name "auto-complete-1.3.1/dict" user-package-root))
-;;; (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
-;;; (global-auto-complete-mode t)
-;;; (add-to-list 'ac-modes 'inferior-scheme-mode)
-;;; (add-to-list 'ac-modes 'shell-mode)
+
 (setq ac-auto-start 2)
 (setq ac-ignore-case nil)
 
@@ -480,14 +474,6 @@ _
                       (local-set-key (kbd "C-c p") 'java-header-skel))))
 (require 'recentf-ext)
 
-;;; anything-git-goto
-;;; remove '-cmo', which scanning all directory for untracked and
-;;; modified files
-;;; this is much quicker than the default
-(defvar git-goto-cmd
-  "cd %s && git \
---no-pager ls-files")
-
 ;;; based on http://www.millingtons.eclipse.co.uk/glyn/dotemacs.html
 (defun swap-windows ()
   "Swap first 2 window, keep cursor window."
@@ -527,7 +513,7 @@ _
 (global-set-key (kbd "C-<f9>") 'reverse-swap-windows)
 ;;; load anything-config
 (require 'anything-config)
-(require 'anything-git-goto)
+(require 'anything-goto)
 (require 'anything-ack)
 (require 'yari)
 (setq anything-c-adaptive-history-length 100)
@@ -542,11 +528,11 @@ _
                          "*my-anything-buffer*"))
 (defvar cached-files nil
   "Record cached filecache directories.")
-(defun my-anything-git-repo-or-file-cache ()
+(defun my-anything-dvcs-repo-or-file-cache ()
   "Find file in git repo or file cached dir."
   (interactive)
-  (if (anything-git-goto-find-git-repo default-directory)
-      (call-interactively 'anything-git-goto )
+  (if (anything-goto-find-dvcs-repo default-directory)
+      (call-interactively 'anything-goto )
     (progn
       (require 'filecache)
       (when (not (member default-directory cached-files))
@@ -554,6 +540,7 @@ _
         (call-interactively 'file-cache-add-directory-using-find))
       (anything-other-buffer '(anything-c-source-file-cache)
                             "*my-anything-file-cache-buffer*"))))
+
 (setq anything-c-adaptive-history-length 100)
 ;;; restore or create *scratch* buffer
 (defun restore-scratch-buffer (&optional num)
@@ -839,6 +826,10 @@ when staging untracked files, we don't want it to refresh"
 (defun toggle-proxy ()
   (interactive)
   (setq url-using-proxy (not url-using-proxy)))
+
+;;; yasnippet
+(require 'yasnippet)
+(yas-global-mode 1)
 
 (provide '.emacs)
 ;;; .emacs ends here
