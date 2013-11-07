@@ -790,7 +790,7 @@ when staging untracked files, we don't want it to refresh"
       (setq exec-path (append exec-path '("/usr/texbin")))
       (load "auctex.el" nil t t)
       (load "preview-latex.el" nil t t)
-      (add-hook 'latex-mode-hook
+      (add-hook 'LaTeX-mode-hook
                 (lambda ()
                   (setq TeX-PDF-mode t)
                   (setq TeX-show-compilation t)
