@@ -1,5 +1,10 @@
 #! /usr/bin/env python
 # -* - coding: UTF-8 -* -
+"""
+install:
+  pip install beautifulsoup4 lxml
+"""
+
 import sys
 from bs4 import BeautifulSoup
 from urllib2 import urlopen, HTTPError
