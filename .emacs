@@ -831,5 +831,8 @@ when staging untracked files, we don't want it to refresh"
 (require 'yasnippet)
 (yas-global-mode 1)
 
+;;; anything-htmldoc
+(require 'anything-htmldoc)
+
 (provide '.emacs)
 ;;; .emacs ends here
