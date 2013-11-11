@@ -161,7 +161,7 @@ You can set value same as `thing-at-point'."
     (unless (zerop (call-process-shell-command "ack --version" nil t))
       (error "Failed: ack --version"))
     (goto-char (point-min))
-    (if (re-search-forward "^ack \\([0-9]+\\)\.[0-9]+$" nil t)
+    (if (re-search-forward "^ack \\([0-9]+\\)\.[0-9]+" nil t)
         (setq anything-c-ack-version (string-to-number (match-string 1)))
       (error "Failed: ack version not found. Please set explicitly"))))
 
