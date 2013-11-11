@@ -167,7 +167,6 @@ def stdcpp():
         _print("{0}<->{1}", name, link_base + link + ".html")
 
 def _trimFuncArgs(name):
-    print name
     pos = name.find('(')
     if pos < 0 : return name 
     return name[:pos]
@@ -180,7 +179,7 @@ def sphinx_index(index_file):
     for i in [ j
                for x in soup.find_all('td')
                for i in x.find_all('dl', recursive=False)
-               for j in i.find_all('dt', recursive=False)]:
+               for j in i.find_all('dt', recursive=False) if j.a is not None]:
         name = _trimFuncArgs(i.a.text)
         result.append([name, i.a.get('href')])
     return result
@@ -190,8 +189,14 @@ def pymongo():
     for name, link in sphinx_index(uri):
         _print("{0}<->{1}", name, "http://api.mongodb.org/python/current/" + link)
 
+def python_std():
+    uri = "http://docs.python.org/2/genindex-all.html"
+    for name, link in sphinx_index(uri):
+        _print("{0}<->{1}", name, "http://docs.python.org/2/" + link)
+    
 def usage():
     print "python anything-indexer.py jquery"
+
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         usage()
@@ -219,4 +224,5 @@ if __name__ == '__main__':
         spring()
     if command == "pymongo":
         pymongo()
-
+    if command == "python_std":
+        python_std()

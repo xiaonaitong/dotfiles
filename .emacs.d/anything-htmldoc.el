@@ -48,8 +48,8 @@
   "")
 
 (defun anything-doc-line-goto (name-and-description-and-url)
-  (message (second name-and-description-and-url))
-  (message (car name-and-description-and-url))
+  (message "%s" (second name-and-description-and-url))
+  (message "%s" (car name-and-description-and-url))
   (browse-url (second (cdr name-and-description-and-url))))
 
 (defun anything-doc-line-transformer (candidates source)
@@ -87,20 +87,32 @@
                         (if pos
                             (substring link (anything-htmldoc-index-of (rx (or "/cpp/" "/c/")) link))
                           ;; for sphinx file show module
-                          ;; link format context/api/package/module.html
-                          (let ((api-pos (+ 5 (anything-htmldoc-index-of (rx "/api/") link)))
-                                (html-pos (anything-htmldoc-index-of (rx ".html") link)))
-                            (replace-regexp-in-string "/" "."(substring link api-pos html-pos))))))
+                          ;; link format
+                          ;; context/api/package/module.html
+                          (if (anything-htmldoc-end-index-of (rx (or "/api/" "/library/")) link)
+                              (let ((api-pos (anything-htmldoc-end-index-of (rx (or "/api/" "/library/")) link))
+                                    (html-pos (anything-htmldoc-index-of (rx ".html") link)))
+                                (replace-regexp-in-string "/" "." (substring link api-pos html-pos)))
+                            ""))))
               (list full-name "" link))
           ))))
 
 (defun anything-htmldoc-index-of (needle s &optional ignore-case)
-  "Returns first index of NEEDLE in S, or nil.
+  "Returns index of NEEDLE in S, or nil.
 
 If IGNORE-CASE is non-nil, the comparison is done without paying
 attention to case differences."
   (let ((case-fold-search ignore-case))
     (string-match-p needle s)))
+
+(defun anything-htmldoc-end-index-of (needle s &optional ignore-case)
+  "Returns end match index of NEEDLE in S, or nil.
+
+If IGNORE-CASE is non-nil, the comparison is done without paying
+attention to case differences."
+  (let ((case-fold-search ignore-case))
+    (if (string-match needle s)
+        (match-end 0))))
 
 (defun anything-htmldoc-jquery ()
   (interactive)
@@ -148,6 +160,10 @@ attention to case differences."
   (interactive)
   (anything-other-buffer (anything-htmldoc-source "pymongo" "simple") "*anything doc pymongo *"))
 
+(defun anything-htmldoc-py ()
+  (interactive)
+  (anything-other-buffer (anything-htmldoc-source "python_std" "simple") "*anything doc python *"))
+
 (global-set-key (kbd "<f1> j q") 'anything-htmldoc-jquery)
 (global-set-key (kbd "<f1> j j") 'anything-htmldoc-jdk6)
 (global-set-key (kbd "<f1> 7 j") 'anything-htmldoc-jdk7)
@@ -158,5 +174,8 @@ attention to case differences."
 (global-set-key (kbd "<f1> j e") 'anything-htmldoc-jee6)
 (global-set-key (kbd "<f1> s") 'anything-htmldoc-spring)
 (global-set-key (kbd "<f1> n") 'anything-htmldoc-netty)
+(global-unset-key (kbd "<f1> p"))
+(global-set-key (kbd "<f1> p y") 'anything-htmldoc-py)
+(global-set-key (kbd "<f1> p m") 'anything-htmldoc-pymongo)
 
 (provide 'anything-htmldoc)
