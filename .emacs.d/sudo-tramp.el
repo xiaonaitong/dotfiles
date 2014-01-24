@@ -36,6 +36,13 @@
     (apply 'find-file
            (cons sudo-name (if (boundp 'wildcards) '(wildcards))))))
 
+(defun sudo-dired (filename)
+  "Call `dired` with FILENAME with `sudo-tramp-prefix` prepended."
+  (interactive "Ddired directory with sudo ")
+  (let ((sudo-name (sudo-file-name filename)))
+    (message sudo-name)
+    (apply 'dired (list sudo-name))))
+
 (defun sudo-reopen-file ()
   "Reopen file as root by prefixing its name with sudo-tramp-prefix and by clearing `buffer-read-only`."
   (interactive)
