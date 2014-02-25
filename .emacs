@@ -16,7 +16,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet magit-svn shell-switcher)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet magit-svn shell-switcher)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -422,7 +422,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
           (function (lambda ()
                       (local-set-key (kbd "V") 'magit-svn-start)
                       (local-set-key (kbd "N") 'svn-status)
-                      (local-set-key (kbd "J") 'nrepl-jack-in))))
+                      (local-set-key (kbd "J") 'cider-jack-in))))
 ;;; ethan-wspace
 (require 'ethan-wspace)
 (global-ethan-wspace-mode 0)
@@ -640,13 +640,13 @@ when staging untracked files, we don't want it to refresh"
 (add-to-list 'auto-mode-alist '("bash_aliases$" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.gitconfig$\\|my.cnf$" . conf-mode))
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-;;; nrepl
-(add-hook 'nrepl-interaction-mode-hook
-  'nrepl-turn-on-eldoc-mode)
-(setq nrepl-popup-stacktraces nil)
-(add-to-list 'same-window-buffer-names "*nrepl*")
-(add-hook 'nrepl-mode-hook 'subword-mode)
-(add-hook 'nrepl-mode-hook 'paredit-mode)
+;;; cider
+;; (add-to-list 'same-window-buffer-names "*cider*")
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(setq cider-popup-stacktraces nil)
+(add-hook 'cider-mode-hook 'subword-mode)
+(add-hook 'cider-mode-hook 'paredit-mode)
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
 
 ;; scala-mode
 (defun scala-switch-to-interpreter-other-window ()
