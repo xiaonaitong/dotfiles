@@ -16,7 +16,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nrepl-ritz nrepl nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash color-theme-solarized clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash solarized-theme clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet magit-svn shell-switcher tagedit)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -189,7 +189,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
 (global-set-key (kbd "C-<f11>") 'repeat)
 (global-set-key (kbd "C-<f6>") 'xsteve-ido-choose-from-recentf)
 (global-set-key (kbd "M-j") 'new-line-at-end)
-(global-set-key (kbd "M-<f10>") 'just-one-space)
+(global-set-key (kbd "M-'") 'just-one-space)
 (global-set-key (kbd "<f1> <f1>") 'man)
 (global-set-key (kbd "<f1> j q") 'anything-htmldoc-jquery)
 (global-set-key (kbd "<f1> j d") 'anything-htmldoc-jdk6)
@@ -407,7 +407,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
           (function (lambda ()
                       (local-set-key (kbd "V") 'magit-svn-start)
                       (local-set-key (kbd "N") 'svn-status)
-                      (local-set-key (kbd "J") 'nrepl-jack-in))))
+                      (local-set-key (kbd "J") 'cider-jack-in))))
 ;;; ethan-wspace
 (require 'ethan-wspace)
 (global-ethan-wspace-mode 0)
@@ -457,6 +457,17 @@ _
 (add-hook 'java-mode-hook
           (function (lambda ()
                       (local-set-key (kbd "C-c p") 'java-header-skel))))
+;;; shell script header
+(define-skeleton bash-header-skel
+  "Insert bang ,code-system header and main func"
+  nil
+  "#! /usr/bin/env bash
+")
+
+(add-hook 'sh-mode-hook
+          (function (lambda ()
+                      (local-set-key (kbd "C-c p") 'bash-header-skel))))
+
 (require 'recentf-ext)
 
 ;;; based on http://www.millingtons.eclipse.co.uk/glyn/dotemacs.html
@@ -625,13 +636,13 @@ when staging untracked files, we don't want it to refresh"
 (add-to-list 'auto-mode-alist '("bash_aliases$" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.gitconfig$\\|my.cnf$" . conf-mode))
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-;;; nrepl
-(add-hook 'nrepl-interaction-mode-hook
-  'nrepl-turn-on-eldoc-mode)
-(setq nrepl-popup-stacktraces nil)
-(add-to-list 'same-window-buffer-names "*nrepl*")
-(add-hook 'nrepl-mode-hook 'subword-mode)
-(add-hook 'nrepl-mode-hook 'paredit-mode)
+;;; cider
+;; (add-to-list 'same-window-buffer-names "*cider*")
+(add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+(setq cider-popup-stacktraces nil)
+(add-hook 'cider-mode-hook 'subword-mode)
+(add-hook 'cider-mode-hook 'paredit-mode)
+(add-hook 'cider-repl-mode-hook 'paredit-mode)
 
 ;; scala-mode
 (defun scala-switch-to-interpreter-other-window ()
@@ -735,7 +746,7 @@ when staging untracked files, we don't want it to refresh"
 (require 'dired-x)
 (setq-default dired-omit-files-p t)
 ;;; ignore pyc files
-(setq dired-omit-files (concat dired-omit-files ".pyc$"))
+(setq dired-omit-files (concat dired-omit-files "\\|\\.pyc$\\|\\.o$"))
 (add-hook 'dired-mode-hook
           (function (lambda ()
                       (setq dired-omit-files-p t)
@@ -748,19 +759,14 @@ when staging untracked files, we don't want it to refresh"
 (setq org-agenda-files (file-expand-wildcards "~/.org/*.org"))
 (setq org-default-notes-file "~/.org/todo.org")
 (require 'org)
-(require 'remember)
-(org-remember-insinuate)
-(setq org-remember-clock-out-on-exit nil)
-(setq org-remember-store-without-prompt t)
-(setq org-remember-default-headline "Tasks")
-(setq org-remember-templates
-      '((?t "* TODO %?\n  %i\n  %a" "~/.org/todo.org")
-        (?r "* TODO %?\n  %i" "~/.org/todo.org")
-        (?j "* %U %?\n\n  %i\n  %a" "~/.org/journal.org" "Journal")
-        (?w "* %U %?\n\n  %i" "~/.org/journal.org" "Weekly Review")
-        (?m "* %^{Title}\n  %i\n  %a" "~/.org/misc.org" "Misc")))
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/.org/todo.org" "Tasks") "* TODO %?\n  %i\n  %a")
+        ("r" "Todo" entry (file+headline "~/.org/todo.org" "Tasks") "* TODO %?\n  %i")
+        ("j" "Journal" entry (file+headline "~/.org/journal.org" "Journal") "* %U %?\n\n  %i\n  %a")
+        ("w" "Weekly Review" entry (file+headline "~/.org/journal.org" Weekly Review"") "* %U %?\n\n  %i")
+        ("m" "Misc" entry (file+headline "~/.org/misc.org" "Misc") "* %^{Title}\n  %i\n  %a")))
 
-(global-set-key (kbd "<f9> SPC") 'org-remember)
+(global-set-key (kbd "<f9> SPC") 'org-capture)
 (global-set-key (kbd "<f10> SPC") (lambda ()
                                     (interactive)
                                     (find-file org-default-notes-file)))
@@ -820,8 +826,41 @@ when staging untracked files, we don't want it to refresh"
 ;;; anything-htmldoc
 (require 'anything-htmldoc)
 
-;;; compnay mode
+;;; scala
+(setq auto-mode-alist
+   (cons '("\\.scala\\'" . scala-mode) auto-mode-alist))
+;;; json
+(setq auto-mode-alist
+   (cons '("\\.json\\'" . json-mode) auto-mode-alist))
+;;; tcl
+(setq auto-mode-alist
+      (cons '("\\.tcl\\'" . tcl-mode) auto-mode-alist))
+
+;;; fix anything-locate
+;;; for some reason anything-c-source-locate don't set anything-c-locate-command
+(setq anything-c-locate-command
+          (case system-type
+            ('gnu/linux "locate -i -r %s")
+            ('berkeley-unix "locate -i %s")
+            ('windows-nt "es -i -r %s")
+            (t "locate %s")))
+
+;;
+;; RM-Trailing-Spaces
+;;
+(defun rm-trailing-spaces ()
+  "Remove spaces at ends of all lines."
+  (interactive)
+  (save-excursion
+    (let ((current (point)))
+      (goto-char 0)
+      (while (re-search-forward "[ \t]+$" nil t)
+        (replace-match "" nil nil))
+      (goto-char current))))
+
+;;; company-mode
 (add-hook 'after-init-hook 'global-company-mode)
+
 
 (when (eq system-type 'darwin)
       (set-face-attribute 'default nil :height 140)

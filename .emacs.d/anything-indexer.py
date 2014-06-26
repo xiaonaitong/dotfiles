@@ -6,8 +6,15 @@ install:
 """
 
 import sys
+import urllib2
 from bs4 import BeautifulSoup
 from urllib2 import urlopen, HTTPError
+
+# urllib2.install_opener(
+#     urllib2.build_opener(
+#         urllib2.ProxyHandler({'http': '192.168.56.1:8087'})
+#     )
+# )
 
 def javadoc_class_index(uri_prefix):
     response = urlopen("%sallclasses-frame.html" % uri_prefix)
@@ -80,6 +87,21 @@ def jquery_index(uri):
                        _normalize_description(summary) ])
     return result
 
+def mysql_index(uri):
+    result = []
+    response = urlopen(uri)
+    
+    soup = BeautifulSoup(response.read().decode("utf-8"), 'lxml')
+    for i in soup.find_all("a", class_="xref"):
+        link  = i.get('href')
+        title = _normal_ascii(i.get('title'))
+        result.append([title, link])
+    
+    return result
+
+def _normal_ascii(s):
+    return s.replace(u'\xa0', u' ')
+
 def stdc_index(index_file):
     with open(index_file) as doc:
         soup = BeautifulSoup(doc.read(), 'lxml')
@@ -127,19 +149,19 @@ def javadoc_detail(uri):
         _print("{0}<->{1}", name, uri + link[3:])
     
 def jdk6():
-    javadoc("http://java.sun.com/javase/6/docs/api/")
+    javadoc("http://docs.oracle.com/javase/6/docs/api/")
 
 def jdk6_detail():
-    javadoc_detail("http://java.sun.com/javase/6/docs/api/")
+    javadoc_detail("http://docs.oracle.com/javase/6/docs/api/")
 
 def jee6():
-    javadoc("http://java.sun.com/javaee/6/docs/api/")
+    javadoc("http://docs.oracle.com/javaee/6/api/")
 
 def jdk7():
-    javadoc("http://java.sun.com/javase/7/docs/api/")
+    javadoc("http://docs.oracle.com/javase/7/docs/api/")
 
 def jdk7_detail():
-    javadoc_detail("http://java.sun.com/javase/7/docs/api/")
+    javadoc_detail("http://docs.oracle.com/javase/7/docs/api/")
 
 def netty():
     javadoc("http://netty.io/4.0/api/")
@@ -190,9 +212,20 @@ def pymongo():
         _print("{0}<->{1}", name, "http://api.mongodb.org/python/current/" + link)
 
 def python_std():
-    uri = "http://docs.python.org/2/genindex-all.html"
+    uri = "https://docs.python.org/2/genindex-all.html"
     for name, link in sphinx_index(uri):
-        _print("{0}<->{1}", name, "http://docs.python.org/2/" + link)
+        _print("{0}<->{1}", name, "https://docs.python.org/2/" + link)
+
+def mysql():
+    uri = "http://dev.mysql.com/doc/refman/5.5/en/dynindex-statement.html"
+    base_uri = _uri_parent(uri)
+    
+    for name, link in mysql_index(uri):
+        _print("{0}<->{1}", name, '%s/%s' % (base_uri, link))
+    
+def _uri_parent(uri):
+    last_slash = uri.rindex('/')
+    return uri[:last_slash]
     
 def usage():
     print "python anything-indexer.py jquery"
@@ -226,3 +259,5 @@ if __name__ == '__main__':
         pymongo()
     if command == "python_std":
         python_std()
+    if command == "mysql":
+        mysql()
