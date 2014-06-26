@@ -26,22 +26,7 @@
 ;;; user info
 (setq user-full-name "xiaonaitong"
       user-mail-address "xiaonaitong@gmail.com")
-(when (eq system-type 'darwin)
-      ;; default Latin font (e.g. Consolas)
-      ;;(set-face-attribute 'default nil :family "Consolas")
-      ;; default font size (point * 10)
-      ;;
-      ;; WARNING!  Depending on the default font,
-      ;; if the size is not supported very well, the frame will be clipped
-      ;; so that the beginning of the buffer may not be visible correctly.
-      (set-face-attribute 'default nil :height 120)
-      ;; use specific font for Korean charset.
-      ;; if you want to use different font size for specific charset,
-      ;; add :size POINT-SIZE in the font-spec.
-      ;;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
-      ;; you may want to add different for other charset in this way.
-      (setenv "PATH" (concat "/usr/local/bin" ":" (getenv "PATH")))
-      (push "/usr/local/bin" exec-path))
+
 ;;; reset some default settings
 (setq x-select-enable-clipboard t
       make-backup-files nil
@@ -55,7 +40,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (menu-bar-mode 0)
 (tool-bar-mode -1)
-(setq recentf-max-saved-items 80)
+(setq recentf-max-saved-items 30)
 (recentf-mode 1)
 (require 'linum)
 (global-linum-mode 1)
@@ -784,19 +769,19 @@ when staging untracked files, we don't want it to refresh"
 ;; TODO this mac specific
 ;;; need to install auctex.el manually
 ;;; auctex package in elpa is broken
-(if (eq system-type 'darwin)
-    (progn
-      (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
-      (setq exec-path (append exec-path '("/usr/texbin")))
-      (load "auctex.el" nil t t)
-      (load "preview-latex.el" nil t t)
-      (add-hook 'LaTeX-mode-hook
-                (lambda ()
-                  (setq TeX-PDF-mode t)
-                  (setq TeX-show-compilation t)
-                  (setq TeX-engine 'xetex)
-                  (turn-on-reftex)
-                  (setq reftex-plug-into-AUCTeX t)))))
+;; (if (eq system-type 'darwin)
+;;     (progn
+;;       (setenv "PATH" (concat "/usr/texbin" ":" (getenv "PATH")))
+;;       (setq exec-path (append exec-path '("/usr/texbin")))
+;;       (load "auctex.el" nil t t)
+;;       (load "preview-latex.el" nil t t)
+;;       (add-hook 'LaTeX-mode-hook
+;;                 (lambda ()
+;;                   (setq TeX-PDF-mode t)
+;;                   (setq TeX-show-compilation t)
+;;                   (setq TeX-engine 'xetex)
+;;                   (turn-on-reftex)
+;;                   (setq reftex-plug-into-AUCTeX t)))))
 
 ;;; gradle
 (setq auto-mode-alist
@@ -824,6 +809,7 @@ when staging untracked files, we don't want it to refresh"
 (setq url-proxy-services '(("http". "localhost:8087")
                            ("no_proxy". ".*localhost.*")))
 (defun toggle-proxy ()
+  "Toggle proxy."
   (interactive)
   (setq url-using-proxy (not url-using-proxy)))
 
@@ -833,6 +819,25 @@ when staging untracked files, we don't want it to refresh"
 
 ;;; anything-htmldoc
 (require 'anything-htmldoc)
+
+;;; compnay mode
+(add-hook 'after-init-hook 'global-company-mode)
+
+(when (eq system-type 'darwin)
+      (set-face-attribute 'default nil :height 140)
+      (setenv "PATH" (concat "/usr/local/bin" ":" (getenv "PATH")))
+      (push "/usr/local/bin" exec-path)
+      (set-frame-font "Menlo-15")
+      (set-fontset-font
+       (frame-parameter nil 'font)
+       'han
+       (font-spec :family "Hiragino Sans GB" ))
+      (setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program "open")
+      (global-set-key (kbd "S-M-<left>") 'shrink-window-horizontally)
+      (global-set-key (kbd "S-M-<right>") 'enlarge-window-horizontally)
+      (global-set-key (kbd "S-M-<down>") 'shrink-window)
+      (global-set-key (kbd "S-M-<up>") 'enlarge-window))
 
 (provide '.emacs)
 ;;; .emacs ends here
