@@ -164,6 +164,10 @@ attention to case differences."
   (interactive)
   (anything-other-buffer (anything-htmldoc-source "python_std" "simple") "*anything doc python *"))
 
+(defun anything-htmldoc-mysql ()
+  (interactive)
+  (anything-other-buffer (anything-htmldoc-source "mysql" "simple") "*anything doc mysql *"))
+
 (global-set-key (kbd "<f1> j q") 'anything-htmldoc-jquery)
 (global-set-key (kbd "<f1> j j") 'anything-htmldoc-jdk6)
 (global-set-key (kbd "<f1> 7 j") 'anything-htmldoc-jdk7)
@@ -177,5 +181,7 @@ attention to case differences."
 (global-unset-key (kbd "<f1> p"))
 (global-set-key (kbd "<f1> p y") 'anything-htmldoc-py)
 (global-set-key (kbd "<f1> p m") 'anything-htmldoc-pymongo)
+(global-unset-key (kbd "<f1> m"))
+(global-set-key (kbd "<f1> m y") 'anything-htmldoc-mysql)
 
 (provide 'anything-htmldoc)
