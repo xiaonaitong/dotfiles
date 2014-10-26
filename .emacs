@@ -7,7 +7,7 @@
       '(("ELPA" . "http://tromey.com/elpa/")
         ("gnu" . "http://elpa.gnu.org/packages/")
         ("marmalade" . "http://marmalade-repo.org/packages/")
-        ("melpa" . "http://melpa.milkbox.net/packages/")))
+        ("melpa-stable" . "http://stable.melpa.org/packages/")))
 
 (defun mp-install-rad-packages ()
   "Install only the sweetest of packages."
@@ -16,7 +16,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash solarized-theme clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet magit-svn shell-switcher tagedit)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash solarized-theme clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet magit-svn shell-switcher tagedit multiple-cursors)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -366,7 +366,6 @@ use it When needed to connect remote swank-clojure session or use LISP."
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(anything-command-map-prefix-key "<f6> a")
- '(clojure-swank-command "lein2 jack-in %s")
  '(quack-programs (quote ("mzscheme" "bigloo" "csi" "csi -hygienic" "gosh" "gracket" "gsi" "gsi ~~/syntax-case.scm -" "guile" "kawa" "mit-scheme" "racket" "racket -il typed/racket" "rs" "scheme" "scheme48" "scsh" "sisc" "stklos" "sxi")))
  '(tab-width 4))
 (custom-set-faces
@@ -377,7 +376,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
  '(magit-item-highlight ((t (:inherit highlight :background "#111")))))
 
 (require 'expand-region)
-(global-set-key (kbd "C-<prior>") 'er/expand-region)
+(global-set-key (kbd "C-=") 'er/expand-region)
 
 ;;; from http://www.xsteve.at/prg/emacs/power-user-tips.html
 (defun xsteve-ido-choose-from-recentf ()
@@ -812,12 +811,14 @@ when staging untracked files, we don't want it to refresh"
                                      (flycheck-mode -1))))
 
 ;;; proxy setting
-(setq url-proxy-services '(("http". "localhost:8087")
-                           ("no_proxy". ".*localhost.*")))
 (defun toggle-proxy ()
   "Toggle proxy."
   (interactive)
-  (setq url-using-proxy (not url-using-proxy)))
+  (setq url-using-proxy (not url-using-proxy))
+  (if url-using-proxy
+      (setq url-proxy-services '(("http". "localhost:8087")
+                           ("no_proxy". ".*localhost.*")))
+    (setq url-proxy-services nil)))
 
 ;;; yasnippet
 (require 'yasnippet)
@@ -877,6 +878,7 @@ when staging untracked files, we don't want it to refresh"
       (global-set-key (kbd "S-M-<right>") 'enlarge-window-horizontally)
       (global-set-key (kbd "S-M-<down>") 'shrink-window)
       (global-set-key (kbd "S-M-<up>") 'enlarge-window))
+(golden-ratio-mode 1)
 
 (provide '.emacs)
 ;;; .emacs ends here
