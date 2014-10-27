@@ -16,7 +16,7 @@
   (mapc #'(lambda (package)
            (unless (package-installed-p package)
              (package-install package)))
-        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash solarized-theme clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet magit-svn shell-switcher tagedit multiple-cursors)))
+        '(emmet-mode ethan-wspace quack recentf-ext yari yaml-mode websocket visual-regexp-steroids visual-regexp virtualenvwrapper tuareg symbols-mode starter-kit soothe-theme smex slime scala-mode s rvm ruby-electric rspec-mode request popup php-mode php-extras paredit pabbrev nginx-mode monokai-theme mongo markdown-mode magit json-mode js2-mode inf-ruby ido-ubiquitous idle-highlight-mode idle-highlight httpcode groovy-mode flymake-shell flymake-easy flycheck find-file-in-project expand-region eredis dired-single dash solarized-theme clojure-mode caml bash-completion auto-complete ascii anything-config anything all undo-tree rvm enh-ruby-mode groovy-mode yasnippet magit-svn shell-switcher tagedit golden-ratio nyan-mode multiple-cursors)))
 ;;;(mp-install-rad-packages)
 
 ;; (setq url-using-proxy t)
@@ -82,8 +82,8 @@
 (require 'clojure-mode)
 
 (require 'paredit)
-
 (defun paredit-mode-enable ()
+  "Toggle paredit mode."
   (paredit-mode 1))
 
 (dolist (mode-hook '(clojure-mode-hook lisp-mode-hook emacs-lisp-mode-hook inferior-emacs-lisp-mode-hook
@@ -223,18 +223,21 @@ use it When needed to connect remote swank-clojure session or use LISP."
 
 ;;; newline below current-line
 (defun new-line-at-end ()
+  "Add new line below current line."
   (interactive)
   (progn
     (move-end-of-line 1)
     (newline)))
 ;;; dired current buffer file directory
 (defun dired-open-current-directory ()
+  "Dired on default directory."
   (interactive)
   (if (buffer-file-name)
       (dired default-directory)))
 
 ;;; full screen
 (defun toggle-fullscreen (&optional f)
+  "Toggle flull screeen if F."
   (interactive)
   (let ((current-value (frame-parameter nil 'fullscreen)))
     (set-frame-parameter nil 'fullscreen
@@ -278,6 +281,7 @@ use it When needed to connect remote swank-clojure session or use LISP."
 
 ;;; paredit for javascript
 (defun paredit-space-for-delimiter-p (endp delimiter)
+  "Fix paredit for Javascript ENDP DELIMITER."
   (and (not (if endp (eobp) (bobp)))
        (memq (char-syntax (if endp (char-after) (char-before)))
              (list ?\"  ;; REMOVED ?w ?_
@@ -490,6 +494,7 @@ _
   (other-window 1))
 
 (defun my-cycle (lst)
+  "Cycle of argument LST."
   (reverse (cons (car lst)
                  (reverse (cdr lst)))))
 (defun cycle-windows ()
@@ -616,6 +621,7 @@ when staging untracked files, we don't want it to refresh"
 
 ;;; root previlege edit
 (defun esk-su-edit (&optional arg)
+  "Reopen file or directory with sudo previlege.  If ARG, use default `buffer-file-name`."
   (interactive "p")
   (if (or arg (not buffer-file-name))
       (find-file (concat "/su:root@localhost:" (ido-read-file-name "File: ")))
@@ -702,6 +708,7 @@ when staging untracked files, we don't want it to refresh"
      ("Magit" . my-magit-svn)
      ("Open Dir" . dired))
     "See (info \"(emacs)magit\")."))
+
 (defun anything-c-magit-repos (&optional pattern)
   "Find all git repositories with PATTERN."
   (interactive)
@@ -762,7 +769,7 @@ when staging untracked files, we don't want it to refresh"
       '(("t" "Todo" entry (file+headline "~/.org/todo.org" "Tasks") "* TODO %?\n  %i\n  %a")
         ("r" "Todo" entry (file+headline "~/.org/todo.org" "Tasks") "* TODO %?\n  %i")
         ("j" "Journal" entry (file+headline "~/.org/journal.org" "Journal") "* %U %?\n\n  %i\n  %a")
-        ("w" "Weekly Review" entry (file+headline "~/.org/journal.org" Weekly Review"") "* %U %?\n\n  %i")
+        ("w" "Weekly Review" entry (file+headline "~/.org/journal.org" "Weekly Review") "* %U %?\n\n  %i")
         ("m" "Misc" entry (file+headline "~/.org/misc.org" "Misc") "* %^{Title}\n  %i\n  %a")))
 
 (global-set-key (kbd "<f9> SPC") 'org-capture)
@@ -812,7 +819,7 @@ when staging untracked files, we don't want it to refresh"
 
 ;;; proxy setting
 (defun toggle-proxy ()
-  "Toggle proxy."
+  "Toggle if use proxy."
   (interactive)
   (setq url-using-proxy (not url-using-proxy))
   (if url-using-proxy
@@ -862,7 +869,6 @@ when staging untracked files, we don't want it to refresh"
 ;;; company-mode
 (add-hook 'after-init-hook 'global-company-mode)
 
-
 (when (eq system-type 'darwin)
       (set-face-attribute 'default nil :height 140)
       (setenv "PATH" (concat "/usr/local/bin" ":" (getenv "PATH")))
@@ -878,7 +884,12 @@ when staging untracked files, we don't want it to refresh"
       (global-set-key (kbd "S-M-<right>") 'enlarge-window-horizontally)
       (global-set-key (kbd "S-M-<down>") 'shrink-window)
       (global-set-key (kbd "S-M-<up>") 'enlarge-window))
+;;; log4j mode
+(add-hook 'log4j-mode-hook 'toggle-truncate-lines)
+(add-hook 'occur-mode-hook 'toggle-truncate-lines)
+;;; golden-ratio
 (golden-ratio-mode 1)
+(nyan-mode 1)
 
 (provide '.emacs)
 ;;; .emacs ends here
